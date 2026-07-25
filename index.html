@@ -11,7 +11,7 @@ main{max-width:980px;margin:auto;padding:22px 16px 100px}.top{display:flex;justi
 h2{font-size:16px;margin:0 0 12px}h3{font-size:13px;color:var(--muted);margin:12px 0 6px}.big{font-size:25px;font-weight:800}.muted{color:var(--muted);font-size:12px}.metric{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pill{background:#0e1628;border:1px solid var(--line);border-radius:12px;padding:10px}.pill b{display:block;font-size:17px;margin-top:3px}
 input,select,button,textarea{width:100%;border-radius:12px;border:1px solid var(--line);background:#0d1526;color:var(--text);padding:11px;font-size:15px}textarea{min-height:90px}button{background:var(--accent);color:#071510;font-weight:800;border:0}button.secondary{background:#26334d;color:white}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
 .page{display:none}.page.active{display:block}.event{padding:13px;border-radius:14px;background:#202d46;border-left:5px solid var(--warn);margin:8px 0}.event.pay{border-left-color:var(--danger)}.event.biz{border-left-color:var(--accent)}
-nav{position:fixed;bottom:0;left:0;right:0;background:#0a1120eF;backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;overflow-x:auto;padding:7px max(8px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom));z-index:10}nav button{min-width:92px;background:transparent;color:var(--muted);padding:8px 5px;font-size:11px}nav button.on{color:var(--accent);background:#172239}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:9px 5px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.danger{background:var(--danger);color:white}.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.day{min-height:72px;background:#0e1628;border:1px solid var(--line);border-radius:10px;padding:6px;font-size:12px}.day.sun{background:#291724}.day.sat{background:#142440}.day.today{background:#153a31!important;border:2px solid var(--accent);box-shadow:0 0 0 2px #63d6b522}.day.holiday{background:#3b1822!important;border:2px solid var(--danger);color:#ffd5da}.day.has{border:2px solid var(--warn);box-shadow:0 0 0 2px #ffc76633}.day.has::after{content:'予定';display:block;margin-top:4px;background:var(--warn);color:#2b2100;border-radius:4px;font-size:8px;font-weight:900}.dot{margin-top:5px;padding:3px 4px;background:#5d4720;border-radius:5px;font-size:9px;overflow:hidden}.result{font-weight:800;color:var(--accent);font-size:18px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#0a1120eF;backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;overflow-x:auto;padding:7px max(8px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom));z-index:10}nav button{min-width:92px;background:transparent;color:var(--muted);padding:8px 5px;font-size:11px}nav button.on{color:var(--accent);background:#172239}.table{width:100%;border-collapse:collapse}.table td,.table th{padding:9px 5px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.danger{background:var(--danger);color:white}.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.day{min-height:72px;background:#0e1628;border:1px solid var(--line);border-radius:10px;padding:6px;font-size:12px}.day.sun{background:#291724}.day.sat{background:#142440}.day.today{background:#153a31!important;border:2px solid var(--accent);box-shadow:0 0 0 2px #63d6b522}.day.holiday{background:#3b1822!important;border:2px solid var(--danger);color:#ffd5da}.day.has{border:2px solid var(--warn);box-shadow:0 0 0 2px #ffc76633}.day.has::after{content:'äºå®';display:block;margin-top:4px;background:var(--warn);color:#2b2100;border-radius:4px;font-size:8px;font-weight:900}.dot{margin-top:5px;padding:3px 4px;background:#5d4720;border-radius:5px;font-size:9px;overflow:hidden}.result{font-weight:800;color:var(--accent);font-size:18px}
 @media(max-width:600px){
 main{padding:10px 10px 88px}.top{margin-bottom:8px}.brand{font-size:18px}.date{font-size:11px}
 #home .grid{grid-template-columns:1fr 1fr;gap:8px}#home .card{padding:11px;border-radius:14px}#home h2{font-size:13px;margin-bottom:6px}
@@ -21,58 +21,71 @@ main{padding:10px 10px 88px}.top{margin-bottom:8px}.brand{font-size:18px}.date{f
 }
 </style>
 </head><body><main>
-<section id="home" class="page active"><div class="top"><div><div class="brand">TENCHO ONE</div><div class="muted">あなたのお店に、もう1人の店長を。</div></div><div class="date" id="today"></div></div>
+<section id="home" class="page active"><div class="top"><div><div class="brand">TENCHO ONE</div><div class="muted">ããªãã®ãåºã«ããã1äººã®åºé·ãã</div></div><div class="date" id="today"></div></div>
 <div class="grid">
-<div class="card"><h2>売上</h2><div class="metric"><div class="pill">当日の前年売上<b id="hySales">¥0</b></div><div class="pill">昨日までの売上累計<b id="cumSales">¥0</b></div><div class="pill">昨日までの前年売上比<b id="salesYoY">-</b></div></div></div>
-<div class="card"><h2>客数</h2><div class="metric"><div class="pill">当日の前年客数<b id="hyCust">0人</b></div><div class="pill">昨日までの客数累計<b id="cumCust">0人</b></div><div class="pill">昨日までの前年客数比<b id="custYoY">-</b></div></div></div>
-<div class="card"><h2>平均客単価</h2><div class="metric"><div class="pill">今月<b id="avgNow">¥0</b></div><div class="pill">前月<b id="avgPrev">¥0</b></div></div></div>
-<div class="card"><h2>原価・利益</h2><div class="metric"><div class="pill">昨日までの原価率<b id="costRate">0%</b></div><div class="pill">利益<b id="profit">¥0</b></div></div></div>
-<div class="card wide"><h2>直近の行事・支払い</h2><div id="homeEvents"></div></div>
+<div class="card"><h2>å£²ä¸</h2><div class="metric"><div class="pill">å½æ¥ã®åå¹´å£²ä¸<b id="hySales">Â¥0</b></div><div class="pill">æ¨æ¥ã¾ã§ã®å£²ä¸ç´¯è¨<b id="cumSales">Â¥0</b></div><div class="pill">æ¨æ¥ã¾ã§ã®åå¹´å£²ä¸æ¯<b id="salesYoY">-</b></div></div></div>
+<div class="card"><h2>å®¢æ°</h2><div class="metric"><div class="pill">å½æ¥ã®åå¹´å®¢æ°<b id="hyCust">0äºº</b></div><div class="pill">æ¨æ¥ã¾ã§ã®å®¢æ°ç´¯è¨<b id="cumCust">0äºº</b></div><div class="pill">æ¨æ¥ã¾ã§ã®åå¹´å®¢æ°æ¯<b id="custYoY">-</b></div></div></div>
+<div class="card"><h2>å¹³åå®¢åä¾¡</h2><div class="metric"><div class="pill">ä»æ<b id="avgNow">Â¥0</b></div><div class="pill">åæ<b id="avgPrev">Â¥0</b></div></div></div>
+<div class="card"><h2>åä¾¡ã»å©ç</h2><div class="metric"><div class="pill">æ¨æ¥ã¾ã§ã®åä¾¡ç<b id="costRate">0%</b></div><div class="pill">å©ç<b id="profit">Â¥0</b></div></div></div>
+<div class="card wide"><h2>ç´è¿ã®è¡äºã»æ¯æã</h2><div id="homeEvents"></div></div>
 </div></section>
 
-<section id="sales" class="page"><div class="top"><div class="brand">売上・客数</div><div class="date">日別入力・確認</div></div>
-<div class="card"><div class="row"><input id="sdate" type="date"><input id="salesv" type="number" placeholder="売上（税込）"></div><input id="custv" type="number" placeholder="客数"><button onclick="addSales()" style="margin-top:8px">登録</button></div>
-<div class="card" style="margin-top:12px"><h2>実績</h2><table class="table"><thead><tr><th>日付</th><th>売上</th><th>客数</th><th>客単価</th></tr></thead><tbody id="salesRows"></tbody></table></div></section>
-
-<section id="bowl" class="page"><div class="top"><div class="brand">おすすめ丼作成</div><div class="date">商品登録情報から提案</div></div>
-<div class="card">
-<h2>条件を入力</h2>
-<div class="row"><input id="aiPrice" type="number" placeholder="希望売価（税込）"><input id="aiRate" type="number" placeholder="目標原価率 %"></div>
-<div class="row"><input id="aiItems" type="number" min="1" max="10" value="4" placeholder="商品数"><input id="aiTheme" placeholder="条件・イメージ 例：ボリューム重視"></div>
-<button onclick="smartSuggest()">AI提案</button>
-<div id="aiResult" class="item muted">条件を入れて「AI提案」を押してください。</div>
+<section id="sales" class="page"><div class="top"><div class="brand">å£²ä¸ã»å®¢æ°</div><div class="date">æ¥å¥å¥åã»ç¢ºèª</div></div>
+<div class="card"><div class="row"><input id="sdate" type="date"><input id="salesv" type="number" placeholder="å£²ä¸ï¼ç¨è¾¼ï¼"></div><input id="custv" type="number" placeholder="å®¢æ°"><button onclick="addSales()" style="margin-top:8px">ç»é²</button></div>
+<div class="card" style="margin-top:12px">
+<h2>ããªããªã¼å£²ä¸</h2>
+<div class="row"><input id="ddate" type="date"><select id="dservice"></select></div>
+<div class="row"><input id="dsales" type="number" placeholder="å£²ä¸ï¼ç¨è¾¼ï¼"><div class="pill">å¥éè¦è¾¼<b id="dnet">Â¥0</b></div></div>
+<button onclick="addDeliverySale()">ããªããªã¼å£²ä¸ãç»é²</button>
+<div id="deliveryList" style="margin-top:10px"></div>
 </div>
-<div class="card" style="margin-top:12px"><input id="bname" placeholder="丼名"><div id="bowlLines"></div><button class="secondary" onclick="addBowlLine()">＋ 商品を追加</button><div class="row"><input id="price" type="number" placeholder="売価（税込）"><div class="pill">原価<b id="bowlCost">¥0</b></div></div><div class="row"><div class="pill">原価率<b id="bowlRate">0%</b></div><div class="pill">粗利益<b id="bowlProfit">¥0</b></div></div><button onclick="calcBowl()">原価を計算</button><button class="secondary" style="margin-top:8px" onclick="saveBowlAsRecipe()">この丼をレシピ保存</button></div></section>
+<div class="card" style="margin-top:12px">
+<h2>ããªããªã¼ãµã¼ãã¹è¨­å®</h2>
+<div class="row"><input id="newServiceName" placeholder="ãµã¼ãã¹å"><input id="newServiceFee" type="number" step="0.1" placeholder="ææ°æ %"></div>
+<button onclick="addDeliveryService()">è¿½å </button>
+<div id="deliveryServiceList" style="margin-top:10px"></div>
+</div>
+<div class="card" style="margin-top:12px"><h2>å®ç¸¾</h2><table class="table"><thead><tr><th>æ¥ä»</th><th>å£²ä¸</th><th>å®¢æ°</th><th>å®¢åä¾¡</th></tr></thead><tbody id="salesRows"></tbody></table></div></section>
 
-<section id="products" class="page"><div class="top"><div class="brand">商品登録</div><div class="date">1g・1枚単価 / 歩留まり</div></div>
-<div class="card"><input id="pname" placeholder="商品名"><div class="row3"><input id="buyPrice" type="number" placeholder="仕入価格（税込）"><input id="buyQty" type="number" placeholder="仕入数量"><select id="unit"><option>g</option><option>kg</option><option>枚</option><option>個</option><option>尾</option><option>本</option><option>パック</option></select></div><div class="row"><input id="usableQty" type="number" placeholder="実際に使える量（任意）"><input id="yield" type="number" value="100" min="0.1" max="100" step="0.1" placeholder="歩留まり %"></div><div class="row"><div class="pill">実質単価<b id="unitCost">¥0</b></div><div class="pill">使用可能量<b id="usablePreview">0</b></div></div><div class="muted" id="taxEx">税抜目安 ¥0</div><input id="editPid" type="hidden"><button id="productSaveBtn" onclick="addProduct()">商品登録</button><button id="productCancelBtn" class="secondary" onclick="cancelEdit()" style="margin-top:8px;display:none">変更をキャンセル</button></div>
-<div class="card" style="margin-top:12px"><table class="table"><thead><tr><th>商品</th><th>単位原価</th><th>歩留まり</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div></section>
+<section id="bowl" class="page"><div class="top"><div class="brand">ããããä¸¼ä½æ</div><div class="date">ååç»é²æå ±ããææ¡</div></div>
+<div class="card">
+<h2>æ¡ä»¶ãå¥å</h2>
+<div class="row"><input id="aiPrice" type="number" placeholder="å¸æå£²ä¾¡ï¼ç¨è¾¼ï¼"><input id="aiRate" type="number" placeholder="ç®æ¨åä¾¡ç %"></div>
+<div class="row"><input id="aiItems" type="number" min="1" max="10" value="4" placeholder="ååæ°"><input id="aiTheme" placeholder="æ¡ä»¶ã»ã¤ã¡ã¼ã¸ ä¾ï¼ããªã¥ã¼ã éè¦"></div>
+<button onclick="smartSuggest()">AIææ¡</button>
+<div id="aiResult" class="item muted">æ¡ä»¶ãå¥ãã¦ãAIææ¡ããæ¼ãã¦ãã ããã</div>
+</div>
+<div class="card" style="margin-top:12px"><input id="bname" placeholder="ä¸¼å"><div id="bowlLines"></div><button class="secondary" onclick="addBowlLine()">ï¼ ååãè¿½å </button><div class="row"><input id="price" type="number" placeholder="å£²ä¾¡ï¼ç¨è¾¼ï¼"><div class="pill">åä¾¡<b id="bowlCost">Â¥0</b></div></div><div class="row"><div class="pill">åä¾¡ç<b id="bowlRate">0%</b></div><div class="pill">ç²å©ç<b id="bowlProfit">Â¥0</b></div></div><button onclick="calcBowl()">åä¾¡ãè¨ç®</button><button class="secondary" style="margin-top:8px" onclick="saveBowlAsRecipe()">ãã®ä¸¼ãã¬ã·ãä¿å­</button></div></section>
 
-<section id="calendar" class="page"><div class="top"><div class="brand">カレンダー</div><div class="date">日付をタッチして登録</div></div><div class="card"><div class="row"><button class="secondary" onclick="moveMonth(-1)">←</button><button class="secondary" onclick="moveMonth(1)">→</button></div><h2 id="calTitle"></h2><div class="cal" id="cal"></div></div>
-<div class="card" style="margin-top:12px"><h2>行事登録</h2><input id="edate" type="date"><input id="etitle" placeholder="行事・支払い名" style="margin-top:8px"><select id="etype" style="margin-top:8px"><option value="event">イベント</option><option value="pay">支払い</option><option value="biz">店舗行事</option></select><button onclick="addEvent()" style="margin-top:8px">登録</button></div></section>
+<section id="products" class="page"><div class="top"><div class="brand">ååç»é²</div><div class="date">1gã»1æåä¾¡ / æ­©çã¾ã</div></div>
+<div class="card"><input id="pname" placeholder="ååå"><div class="row3"><input id="buyPrice" type="number" placeholder="ä»å¥ä¾¡æ ¼ï¼ç¨è¾¼ï¼"><input id="buyQty" type="number" placeholder="ä»å¥æ°é"><select id="unit"><option>g</option><option>kg</option><option>æ</option><option>å</option><option>å°¾</option><option>æ¬</option><option>ããã¯</option></select></div><div class="row"><input id="usableQty" type="number" placeholder="å®éã«ä½¿ããéï¼ä»»æï¼"><input id="yield" type="number" value="100" min="0.1" max="100" step="0.1" placeholder="æ­©çã¾ã %"></div><div class="row"><div class="pill">å®è³ªåä¾¡<b id="unitCost">Â¥0</b></div><div class="pill">ä½¿ç¨å¯è½é<b id="usablePreview">0</b></div></div><div class="muted" id="taxEx">ç¨æç®å® Â¥0</div><input id="editPid" type="hidden"><button id="productSaveBtn" onclick="addProduct()">ååç»é²</button><button id="productCancelBtn" class="secondary" onclick="cancelEdit()" style="margin-top:8px;display:none">å¤æ´ãã­ã£ã³ã»ã«</button></div>
+<div class="card" style="margin-top:12px"><table class="table"><thead><tr><th>åå</th><th>åä½åä¾¡</th><th>æ­©çã¾ã</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div></section>
 
-<section id="recipes" class="page"><div class="top"><div class="brand">レシピ保管</div><div class="date">商品登録データから原価計算</div></div><div class="card"><input id="rname" placeholder="商品名 / レシピ名"><div id="recipeLines"></div><button class="secondary" onclick="addRecipeLine()">＋ 材料を追加</button><div class="row"><input id="rprice" type="number" placeholder="売価（税込）"><div class="pill">原価率<b id="recipeRate">0%</b></div></div><textarea id="memo" placeholder="作り方・メモ"></textarea><button onclick="saveRecipe()">保存</button></div><div id="recipeList"></div></section>
+<section id="calendar" class="page"><div class="top"><div class="brand">ã«ã¬ã³ãã¼</div><div class="date">æ¥ä»ãã¿ãããã¦ç»é²</div></div><div class="card"><div class="row"><button class="secondary" onclick="moveMonth(-1)">â</button><button class="secondary" onclick="moveMonth(1)">â</button></div><h2 id="calTitle"></h2><div class="cal" id="cal"></div></div>
+<div class="card" style="margin-top:12px"><h2>è¡äºç»é²</h2><input id="edate" type="date"><input id="etitle" placeholder="è¡äºã»æ¯æãå" style="margin-top:8px"><select id="etype" style="margin-top:8px"><option value="event">ã¤ãã³ã</option><option value="pay">æ¯æã</option><option value="biz">åºèè¡äº</option></select><button onclick="addEvent()" style="margin-top:8px">ç»é²</button></div></section>
 
-<section id="stock" class="page"><div class="top"><div class="brand">棚卸し</div><div class="date">登録商品を使用</div></div><div class="card"><div id="stockRows"></div><button onclick="calcStock()">棚卸し金額を計算</button><div class="big" id="stockTotal" style="margin-top:12px">¥0</div></div></section>
+<section id="recipes" class="page"><div class="top"><div class="brand">ã¬ã·ãä¿ç®¡</div><div class="date">ååç»é²ãã¼ã¿ããåä¾¡è¨ç®</div></div><div class="card"><input id="rname" placeholder="ååå / ã¬ã·ãå"><div id="recipeLines"></div><button class="secondary" onclick="addRecipeLine()">ï¼ ææãè¿½å </button><div class="row"><input id="rprice" type="number" placeholder="å£²ä¾¡ï¼ç¨è¾¼ï¼"><div class="pill">åä¾¡ç<b id="recipeRate">0%</b></div></div><textarea id="memo" placeholder="ä½ãæ¹ã»ã¡ã¢"></textarea><button onclick="saveRecipe()">ä¿å­</button></div><div id="recipeList"></div></section>
+
+<section id="stock" class="page"><div class="top"><div class="brand">æ£å¸ã</div><div class="date">ç»é²ååãä½¿ç¨</div></div><div class="card"><div id="stockRows"></div><button onclick="calcStock()">æ£å¸ãéé¡ãè¨ç®</button><div class="big" id="stockTotal" style="margin-top:12px">Â¥0</div></div></section>
 </main>
 <nav id="nav"></nav>
 <script>
-const K='tencho_one_v5_'; const load=(k,d=[])=>JSON.parse(localStorage.getItem(K+k)||JSON.stringify(d)); const save=(k,v)=>localStorage.setItem(K+k,JSON.stringify(v)); const yen=n=>'¥'+Math.round(n||0).toLocaleString();
+const K='tencho_one_v5_'; const load=(k,d=[])=>JSON.parse(localStorage.getItem(K+k)||JSON.stringify(d)); const save=(k,v)=>localStorage.setItem(K+k,JSON.stringify(v)); const yen=n=>'Â¥'+Math.round(n||0).toLocaleString();
 let products=load('products'), sales=load('sales'), events=load('events'), recipes=load('recipes');
-const pages=[['home','ホーム'],['sales','売上・客数'],['bowl','丼作成'],['products','商品登録'],['calendar','カレンダー'],['recipes','レシピ'],['stock','棚卸し']];
+const pages=[['home','ãã¼ã '],['sales','å£²ä¸ã»å®¢æ°'],['bowl','ä¸¼ä½æ'],['products','ååç»é²'],['calendar','ã«ã¬ã³ãã¼'],['recipes','ã¬ã·ã'],['stock','æ£å¸ã']];
 nav.innerHTML=pages.map((p,i)=>`<button class="${i?'':'on'}" onclick="go('${p[0]}',this)">${p[1]}</button>`).join('');
 function go(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');if(id==='stock')renderStock();if(id==='calendar')renderCal()}
 today.textContent=new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'}); sdate.value=new Date().toISOString().slice(0,10); edate.value=sdate.value;
 function addSales(){sales.push({date:sdate.value,s:+salesv.value||0,c:+custv.value||0});save('sales',sales);renderSales();renderHome();salesv.value=custv.value=''}
 function renderSales(){salesRows.innerHTML=[...sales].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<tr><td>${x.date}</td><td>${yen(x.s)}</td><td>${x.c}</td><td>${yen(x.c?x.s/x.c:0)}</td></tr>`).join('')}
-function renderHome(){let now=new Date(), ym=now.toISOString().slice(0,7), prev=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString().slice(0,7);let cur=sales.filter(x=>x.date.startsWith(ym)), prv=sales.filter(x=>x.date.startsWith(prev));let cs=cur.reduce((a,x)=>a+x.s,0),cc=cur.reduce((a,x)=>a+x.c,0),cost=cur.reduce((a,x)=>a+(x.cost||0),0),ps=prv.reduce((a,x)=>a+x.s,0),pc=prv.reduce((a,x)=>a+x.c,0);cumSales.textContent=yen(cs);cumCust.textContent=cc+'人';avgNow.textContent=yen(cc?cs/cc:0);avgPrev.textContent=yen(pc?ps/pc:0);costRate.textContent=(cs?cost/cs*100:0).toFixed(1)+'%';profit.textContent=yen(cs-cost);let ly=new Date(now);ly.setFullYear(now.getFullYear()-1);let lydate=ly.toISOString().slice(0,10), lyrow=sales.find(x=>x.date===lydate);hySales.textContent=yen(lyrow?.s);hyCust.textContent=(lyrow?.c||0)+'人';salesYoY.textContent=ps?(cs/ps*100).toFixed(1)+'%':'-';custYoY.textContent=pc?(cc/pc*100).toFixed(1)+'%':'-';let future=[...events].filter(e=>e.date>=sdate.value).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4);homeEvents.innerHTML=future.length?future.map(e=>`<div class="event ${e.type}"><b>${e.date}</b>　${e.title}</div>`).join(''):'<div class="muted">登録された予定はありません</div>'}
+function renderHome(){let now=new Date(), ym=now.toISOString().slice(0,7), prev=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString().slice(0,7);let cur=sales.filter(x=>x.date.startsWith(ym)), prv=sales.filter(x=>x.date.startsWith(prev));let cs=cur.reduce((a,x)=>a+x.s,0),cc=cur.reduce((a,x)=>a+x.c,0),cost=cur.reduce((a,x)=>a+(x.cost||0),0),ps=prv.reduce((a,x)=>a+x.s,0),pc=prv.reduce((a,x)=>a+x.c,0);cumSales.textContent=yen(cs);cumCust.textContent=cc+'äºº';avgNow.textContent=yen(cc?cs/cc:0);avgPrev.textContent=yen(pc?ps/pc:0);costRate.textContent=(cs?cost/cs*100:0).toFixed(1)+'%';profit.textContent=yen(cs-cost);let ly=new Date(now);ly.setFullYear(now.getFullYear()-1);let lydate=ly.toISOString().slice(0,10), lyrow=sales.find(x=>x.date===lydate);hySales.textContent=yen(lyrow?.s);hyCust.textContent=(lyrow?.c||0)+'äºº';salesYoY.textContent=ps?(cs/ps*100).toFixed(1)+'%':'-';custYoY.textContent=pc?(cc/pc*100).toFixed(1)+'%':'-';let future=[...events].filter(e=>e.date>=sdate.value).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4);homeEvents.innerHTML=future.length?future.map(e=>`<div class="event ${e.type}"><b>${e.date}</b>ã${e.title}</div>`).join(''):'<div class="muted">ç»é²ãããäºå®ã¯ããã¾ãã</div>'}
 function productBase(){let q=+buyQty.value||0,u=unit.value;return {q,u,baseQty:u==='kg'?q*1000:q,baseUnit:u==='kg'?'g':u}}
 function unitPreview(fromUsable=false){let {baseQty,baseUnit}=productBase(),usable=+usableQty.value||0;
  if(fromUsable&&usable>0&&baseQty>0)yield.value=Math.min(100,usable/baseQty*100).toFixed(1);
  let y=Math.max(0,(+yield.value||100))/100;
  if(!fromUsable&&baseQty>0)usableQty.value=(baseQty*y).toFixed(baseUnit==='g'?0:2).replace(/\.00$/,'');
  let finalUsable=usableQty.value?+usableQty.value:baseQty*y,c=finalUsable?+buyPrice.value/finalUsable:0;
- unitCost.textContent=yen(c)+' / 1'+baseUnit;usablePreview.textContent=(Math.round(finalUsable*100)/100)+' '+baseUnit;taxEx.textContent='税抜目安 '+yen((+buyPrice.value||0)/1.1)}
+ unitCost.textContent=yen(c)+' / 1'+baseUnit;usablePreview.textContent=(Math.round(finalUsable*100)/100)+' '+baseUnit;taxEx.textContent='ç¨æç®å® '+yen((+buyPrice.value||0)/1.1)}
 [buyPrice,buyQty,unit].forEach(x=>x.oninput=()=>unitPreview(false));yield.oninput=()=>unitPreview(false);usableQty.oninput=()=>unitPreview(true);
 function addProduct(){if(!pname.value)return;let {q,u,baseQty,baseUnit}=productBase(),usable=+usableQty.value||0,y=+yield.value||100;
  if(usable>0&&baseQty>0)y=Math.min(100,usable/baseQty*100);
@@ -80,14 +93,14 @@ function addProduct(){if(!pname.value)return;let {q,u,baseQty,baseUnit}=productB
  let obj={id:id||Date.now(),name:pname.value,cost:c,unit:baseUnit,inputUnit:u,yield:y,buyPrice:+buyPrice.value||0,buyQty:q,usableQty:finalUsable};
  if(id){products=products.map(x=>x.id===id?obj:x)}else{products.push(obj)}
  save('products',products);cancelEdit();renderProducts()}
-function editProduct(id){let p=products.find(x=>x.id===id);if(!p)return;pname.value=p.name;buyPrice.value=p.buyPrice||Math.round(p.cost*(p.buyQty||1)*(p.yield||100)/100);buyQty.value=p.buyQty||1;unit.value=p.inputUnit||p.unit;yield.value=p.yield||100;let base=(p.inputUnit==='kg'?(p.buyQty||0)*1000:(p.buyQty||0));usableQty.value=p.usableQty||base*(p.yield||100)/100;editPid.value=id;productSaveBtn.textContent='変更を保存';productCancelBtn.style.display='block';unitPreview(false);window.scrollTo({top:0,behavior:'smooth'})}
-function cancelEdit(){pname.value=buyPrice.value=buyQty.value=usableQty.value='';yield.value=100;editPid.value='';productSaveBtn.textContent='商品登録';productCancelBtn.style.display='none';unitPreview(false)}
-function delProduct(id){if(confirm('この商品を削除しますか？')){products=products.filter(x=>x.id!==id);save('products',products);renderProducts()}}
-function renderProducts(){productRows.innerHTML=products.map(p=>`<tr><td>${p.name}</td><td>${yen(p.cost)}/1${p.unit}</td><td>${p.yield}%</td><td><button class="secondary" onclick="editProduct(${p.id})">変更</button><button class="danger" style="margin-top:4px" onclick="delProduct(${p.id})">削除</button></td></tr>`).join('')}
+function editProduct(id){let p=products.find(x=>x.id===id);if(!p)return;pname.value=p.name;buyPrice.value=p.buyPrice||Math.round(p.cost*(p.buyQty||1)*(p.yield||100)/100);buyQty.value=p.buyQty||1;unit.value=p.inputUnit||p.unit;yield.value=p.yield||100;let base=(p.inputUnit==='kg'?(p.buyQty||0)*1000:(p.buyQty||0));usableQty.value=p.usableQty||base*(p.yield||100)/100;editPid.value=id;productSaveBtn.textContent='å¤æ´ãä¿å­';productCancelBtn.style.display='block';unitPreview(false);window.scrollTo({top:0,behavior:'smooth'})}
+function cancelEdit(){pname.value=buyPrice.value=buyQty.value=usableQty.value='';yield.value=100;editPid.value='';productSaveBtn.textContent='ååç»é²';productCancelBtn.style.display='none';unitPreview(false)}
+function delProduct(id){if(confirm('ãã®ååãåé¤ãã¾ããï¼')){products=products.filter(x=>x.id!==id);save('products',products);renderProducts()}}
+function renderProducts(){productRows.innerHTML=products.map(p=>`<tr><td>${p.name}</td><td>${yen(p.cost)}/1${p.unit}</td><td>${p.yield}%</td><td><button class="secondary" onclick="editProduct(${p.id})">å¤æ´</button><button class="danger" style="margin-top:4px" onclick="delProduct(${p.id})">åé¤</button></td></tr>`).join('')}
 function selector(){return `<select>${products.map(p=>`<option value="${p.id}">${p.name} (${yen(p.cost)}/1${p.unit})</option>`).join('')}</select>`}
-function addBowlLine(pid='',qty=''){bowlLines.insertAdjacentHTML('beforeend',`<div class="row bowlrow">${selector()}<input type="number" placeholder="使用量" value="${qty}"><button class="danger" onclick="this.parentElement.remove();calcBowl()">削除</button></div>`);let r=bowlLines.lastElementChild;if(pid)r.children[0].value=pid}; addBowlLine()
+function addBowlLine(pid='',qty=''){bowlLines.insertAdjacentHTML('beforeend',`<div class="row bowlrow">${selector()}<input type="number" placeholder="ä½¿ç¨é" value="${qty}"><button class="danger" onclick="this.parentElement.remove();calcBowl()">åé¤</button></div>`);let r=bowlLines.lastElementChild;if(pid)r.children[0].value=pid}; addBowlLine()
 function smartSuggest(){
- if(!products.length){aiResult.innerHTML='先に商品登録をしてください。';return}
+ if(!products.length){aiResult.innerHTML='åã«ååç»é²ããã¦ãã ããã';return}
  let sell=+aiPrice.value||0,target=+aiRate.value||30,n=Math.max(1,Math.min(+aiItems.value||4,products.length)),budget=sell*target/100;
  let hist=load('aiHistory',[]), sorted=[...products].sort((a,b)=>a.cost-b.cost), picks=[];
  // Prefer lower unit-cost ingredients to fit the target; rotate by prior usage so suggestions vary.
@@ -97,25 +110,76 @@ function smartSuggest(){
    if(p.unit==='g')qty=Math.min(qty,50); else qty=Math.min(qty,3);
    picks.push({id:p.id,qty});
  }
- bowlLines.innerHTML='';picks.forEach(x=>addBowlLine(x.id,x.qty));price.value=sell;bname.value=aiTheme.value?aiTheme.value+'丼':'おすすめ丼';calcBowl();
+ bowlLines.innerHTML='';picks.forEach(x=>addBowlLine(x.id,x.qty));price.value=sell;bname.value=aiTheme.value?aiTheme.value+'ä¸¼':'ããããä¸¼';calcBowl();
  let cost=calcLines(bowlLines),rate=sell?cost/sell*100:0;
- aiResult.innerHTML=`<b>提案しました</b><br>原価 ${yen(cost)} / 原価率 ${rate.toFixed(1)}%<br><span class="muted">登録商品と入力条件を元に組み合わせています。</span>`;
+ aiResult.innerHTML=`<b>ææ¡ãã¾ãã</b><br>åä¾¡ ${yen(cost)} / åä¾¡ç ${rate.toFixed(1)}%<br><span class="muted">ç»é²ååã¨å¥åæ¡ä»¶ãåã«çµã¿åããã¦ãã¾ãã</span>`;
  hist.push({at:Date.now(),price:sell,target,theme:aiTheme.value,items:picks.map(x=>x.id)});save('aiHistory',hist.slice(-30));
  save('aiLastConditions',{price:sell,target,n,theme:aiTheme.value});
 }
 function calcLines(root){let sum=0;root.querySelectorAll('.row').forEach(r=>{let p=products.find(x=>x.id==r.children[0].value);sum+=(p?.cost||0)*(+r.children[1].value||0)});return sum}
 function calcBowl(){let c=calcLines(bowlLines),p=+price.value||0;bowlCost.textContent=yen(c);bowlRate.textContent=(p?c/p*100:0).toFixed(1)+'%';bowlProfit.textContent=yen(p-c)}
-function saveBowlAsRecipe(){let c=calcLines(bowlLines),p=+price.value||0,items=[];bowlLines.querySelectorAll('.bowlrow').forEach(r=>{let pr=products.find(x=>x.id==r.children[0].value);if(pr)items.push({id:pr.id,name:pr.name,qty:+r.children[1].value||0,unit:pr.unit,cost:pr.cost})});recipes.push({name:bname.value||'名称未設定の丼',cost:c,price:p,memo:items.map(i=>`${i.name} ${i.qty}${i.unit}`).join(' / '),items});save('recipes',recipes);renderRecipes();alert('レシピに保存しました')}
+function saveBowlAsRecipe(){let c=calcLines(bowlLines),p=+price.value||0,items=[];bowlLines.querySelectorAll('.bowlrow').forEach(r=>{let pr=products.find(x=>x.id==r.children[0].value);if(pr)items.push({id:pr.id,name:pr.name,qty:+r.children[1].value||0,unit:pr.unit,cost:pr.cost})});recipes.push({name:bname.value||'åç§°æªè¨­å®ã®ä¸¼',cost:c,price:p,memo:items.map(i=>`${i.name} ${i.qty}${i.unit}`).join(' / '),items});save('recipes',recipes);renderRecipes();alert('ã¬ã·ãã«ä¿å­ãã¾ãã')}
 let calDate=new Date();
-const jpHolidays2026={'2026-01-01':'元日','2026-01-12':'成人の日','2026-02-11':'建国記念の日','2026-02-23':'天皇誕生日','2026-03-20':'春分の日','2026-04-29':'昭和の日','2026-05-03':'憲法記念日','2026-05-04':'みどりの日','2026-05-05':'こどもの日','2026-05-06':'振替休日','2026-07-20':'海の日','2026-08-11':'山の日','2026-09-21':'敬老の日','2026-09-22':'国民の休日','2026-09-23':'秋分の日','2026-10-12':'スポーツの日','2026-11-03':'文化の日','2026-11-23':'勤労感謝の日'};
+const jpHolidays2026={'2026-01-01':'åæ¥','2026-01-12':'æäººã®æ¥','2026-02-11':'å»ºå½è¨å¿µã®æ¥','2026-02-23':'å¤©çèªçæ¥','2026-03-20':'æ¥åã®æ¥','2026-04-29':'æ­åã®æ¥','2026-05-03':'æ²æ³è¨å¿µæ¥','2026-05-04':'ã¿ã©ãã®æ¥','2026-05-05':'ãã©ãã®æ¥','2026-05-06':'æ¯æ¿ä¼æ¥','2026-07-20':'æµ·ã®æ¥','2026-08-11':'å±±ã®æ¥','2026-09-21':'æ¬èã®æ¥','2026-09-22':'å½æ°ã®ä¼æ¥','2026-09-23':'ç§åã®æ¥','2026-10-12':'ã¹ãã¼ãã®æ¥','2026-11-03':'æåã®æ¥','2026-11-23':'å¤å´æè¬ã®æ¥'};
 function moveMonth(n){calDate.setMonth(calDate.getMonth()+n);renderCal()}
-function renderCal(){let y=calDate.getFullYear(),m=calDate.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();calTitle.textContent=`${y}年 ${m+1}月`;let h=['日','月','火','水','木','金','土'].map(x=>`<b class="muted">${x}</b>`).join('');for(let i=0;i<first;i++)h+='<span></span>';for(let d=1;d<=days;d++){let dt=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,dow=new Date(y,m,d).getDay(),es=events.filter(e=>e.date===dt);let holiday=jpHolidays2026[dt],isToday=dt===new Date().toISOString().slice(0,10);h+=`<div class="day ${dow===0?'sun':dow===6?'sat':''} ${isToday?'today':''} ${holiday?'holiday':''} ${es.length?'has':''}" onclick="edate.value='${dt}';edate.scrollIntoView({behavior:'smooth'})"><b>${d}</b>${isToday?`<div class="dot">今日</div>`:''}${holiday?`<div class="dot">${holiday}</div>`:''}${es.map(e=>`<div class="dot">${e.title}</div>`).join('')}</div>`}cal.innerHTML=h}
+function renderCal(){let y=calDate.getFullYear(),m=calDate.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();calTitle.textContent=`${y}å¹´ ${m+1}æ`;let h=['æ¥','æ','ç«','æ°´','æ¨','é','å'].map(x=>`<b class="muted">${x}</b>`).join('');for(let i=0;i<first;i++)h+='<span></span>';for(let d=1;d<=days;d++){let dt=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,dow=new Date(y,m,d).getDay(),es=events.filter(e=>e.date===dt);let holiday=jpHolidays2026[dt],isToday=dt===new Date().toISOString().slice(0,10);h+=`<div class="day ${dow===0?'sun':dow===6?'sat':''} ${isToday?'today':''} ${holiday?'holiday':''} ${es.length?'has':''}" onclick="edate.value='${dt}';edate.scrollIntoView({behavior:'smooth'})"><b>${d}</b>${isToday?`<div class="dot">ä»æ¥</div>`:''}${holiday?`<div class="dot">${holiday}</div>`:''}${es.map(e=>`<div class="dot">${e.title}</div>`).join('')}</div>`}cal.innerHTML=h}
 function addEvent(){if(!edate.value||!etitle.value)return;events.push({date:edate.value,title:etitle.value,type:etype.value});save('events',events);etitle.value='';renderCal();renderHome()}
-function addRecipeLine(){recipeLines.insertAdjacentHTML('beforeend',`<div class="row">${selector()}<input type="number" placeholder="g・枚・個など"></div>`)};addRecipeLine()
+function addRecipeLine(){recipeLines.insertAdjacentHTML('beforeend',`<div class="row">${selector()}<input type="number" placeholder="gã»æã»åãªã©"></div>`)};addRecipeLine()
 function saveRecipe(){let c=calcLines(recipeLines),p=+rprice.value||0;recipeRate.textContent=(p?c/p*100:0).toFixed(1)+'%';recipes.push({name:rname.value,cost:c,price:p,memo:memo.value});save('recipes',recipes);renderRecipes()}
-function renderRecipes(){recipeList.innerHTML=recipes.map(r=>`<div class="card" style="margin-top:12px"><h2>${r.name||'名称未設定'}</h2><div>${yen(r.cost)} / 原価率 ${(r.price?r.cost/r.price*100:0).toFixed(1)}%</div><div class="muted">${r.memo||''}</div></div>`).join('')}
-function renderStock(){stockRows.innerHTML=products.map(p=>`<div class="row"><div class="pill">${p.name}<span class="muted"> ${yen(p.cost)}/1${p.unit}</span></div><input data-cost="${p.cost}" type="number" placeholder="在庫 ${p.unit}"></div>`).join('')}
+function renderRecipes(){recipeList.innerHTML=recipes.map(r=>`<div class="card" style="margin-top:12px"><h2>${r.name||'åç§°æªè¨­å®'}</h2><div>${yen(r.cost)} / åä¾¡ç ${(r.price?r.cost/r.price*100:0).toFixed(1)}%</div><div class="muted">${r.memo||''}</div></div>`).join('')}
+function renderStock(){stockRows.innerHTML=products.map(p=>`<div class="row"><div class="pill">${p.name}<span class="muted"> ${yen(p.cost)}/1${p.unit}</span></div><input data-cost="${p.cost}" type="number" placeholder="å¨åº« ${p.unit}"></div>`).join('')}
 function calcStock(){let t=0;stockRows.querySelectorAll('input').forEach(i=>t+=(+i.value||0)*(+i.dataset.cost||0));stockTotal.textContent=yen(t)}
 renderProducts();renderSales();renderHome();renderRecipes();renderCal();
 let remembered=load('aiLastConditions',null);if(remembered){aiPrice.value=remembered.price||'';aiRate.value=remembered.target||30;aiItems.value=remembered.n||4;aiTheme.value=remembered.theme||'';}
+
+function refreshTodayV10(){
+ const n=new Date(),w=['æ¥','æ','ç«','æ°´','æ¨','é','å'];
+ const txt=`${n.getFullYear()}å¹´${n.getMonth()+1}æ${n.getDate()}æ¥ï¼${w[n.getDay()]}ï¼`;
+ const el=document.getElementById('today'); if(el)el.textContent=txt;
+}
+refreshTodayV10(); setInterval(refreshTodayV10,60000);
+
+let deliveryServices=load('deliveryServices',[
+ {id:'uber',name:'Uber',fee:35},{id:'demaekan',name:'åºåé¤¨',fee:35},
+ {id:'menu',name:'menu',fee:35},{id:'rocket',name:'ã­ã±ãã',fee:0}
+]);
+let deliverySales=load('deliverySales',[]);
+function renderDeliveryServices(){
+ if(!window.dservice)return;
+ dservice.innerHTML=deliveryServices.map(x=>`<option value="${x.id}">${x.name}ï¼${x.fee}%ï¼</option>`).join('');
+ deliveryServiceList.innerHTML=deliveryServices.map(x=>`<div class="item"><div><b>${x.name}</b><div class="muted">ææ°æ ${x.fee}%</div></div><div><button class="secondary" onclick="editDeliveryService('${x.id}')">å¤æ´</button><button class="danger" style="margin-top:4px" onclick="deleteDeliveryService('${x.id}')">åé¤</button></div></div>`).join('');
+ updateDeliveryNet();
+}
+function addDeliveryService(){
+ let name=newServiceName.value.trim(),fee=Math.max(0,+newServiceFee.value||0); if(!name)return;
+ deliveryServices.push({id:'svc_'+Date.now(),name,fee});save('deliveryServices',deliveryServices);
+ newServiceName.value=newServiceFee.value='';renderDeliveryServices();
+}
+function editDeliveryService(id){
+ let x=deliveryServices.find(v=>v.id===id);if(!x)return;
+ let name=prompt('ãµã¼ãã¹å',x.name);if(name===null||!name.trim())return;
+ let fee=prompt('ææ°æï¼%ï¼',x.fee);if(fee===null)return;
+ x.name=name.trim();x.fee=Math.max(0,+fee||0);save('deliveryServices',deliveryServices);renderDeliveryServices();renderDeliverySales();
+}
+function deleteDeliveryService(id){
+ let x=deliveryServices.find(v=>v.id===id);if(!x||!confirm(`${x.name}ãåé¤ãã¾ããï¼\nç»é²æ¸ã¿ã®å£²ä¸å±¥æ­´ã¯æ®ãã¾ãã`))return;
+ deliveryServices=deliveryServices.filter(v=>v.id!==id);save('deliveryServices',deliveryServices);renderDeliveryServices();
+}
+function selectedDeliveryService(){return deliveryServices.find(x=>x.id===dservice.value)}
+function updateDeliveryNet(){if(!window.dnet)return;let x=selectedDeliveryService(),g=+dsales.value||0;dnet.textContent=yen(g*(1-(x?x.fee:0)/100))}
+function addDeliverySale(){
+ let x=selectedDeliveryService();if(!x||!ddate.value)return;let g=+dsales.value||0;
+ deliverySales.push({id:Date.now(),date:ddate.value,serviceId:x.id,serviceName:x.name,fee:x.fee,gross:g,net:g*(1-x.fee/100)});
+ save('deliverySales',deliverySales);dsales.value='';renderDeliverySales();updateDeliveryNet();
+}
+function deleteDeliverySale(id){if(!confirm('ãã®ããªããªã¼å£²ä¸ãåé¤ãã¾ããï¼'))return;deliverySales=deliverySales.filter(x=>x.id!==id);save('deliverySales',deliverySales);renderDeliverySales()}
+function renderDeliverySales(){
+ if(!window.deliveryList)return;let rows=[...deliverySales].sort((a,b)=>b.date.localeCompare(a.date));
+ deliveryList.innerHTML=rows.length?rows.map(x=>`<div class="item"><div><b>${x.date}ã${x.serviceName}</b><div class="muted">å£²ä¸ ${yen(x.gross)} / ææ°æ ${x.fee}% / å¥éè¦è¾¼ ${yen(x.net)}</div></div><button class="danger" onclick="deleteDeliverySale(${x.id})">åé¤</button></div>`).join(''):'<div class="muted">ããªããªã¼å£²ä¸ã¯ã¾ã ããã¾ããã</div>';
+}
+if(window.ddate){
+ let n=new Date();ddate.value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+ dservice.onchange=updateDeliveryNet;dsales.oninput=updateDeliveryNet;renderDeliveryServices();renderDeliverySales();
+}
+
 </script></body></html>
