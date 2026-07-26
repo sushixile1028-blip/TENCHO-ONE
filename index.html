@@ -1,818 +1,2560 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><title>TENCHO ONE v12</title>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1020">
+
+<title>TENCHO ONE</title>
+
 <style>
-:root{--b:#0b1020;--p:#131b2e;--l:#293650;--t:#f5f7fb;--m:#93a2bb;--a:#63d6b5;--d:#ff6b78}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--b);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{overflow-x:hidden}
-main{max-width:980px;margin:auto;padding:12px 10px calc(105px + env(safe-area-inset-bottom))}
-.page{display:none}.page.on{display:block}
-.top{display:flex;justify-content:space-between;align-items:end;margin:4px 0 12px}
-.brand{font-weight:900;font-size:20px;letter-spacing:.07em}
-.muted{color:var(--m);font-size:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.card{background:var(--p);border:1px solid var(--l);border-radius:14px;padding:11px;margin-bottom:9px}
-.wide{grid-column:1/-1}
-h2{font-size:14px;margin:0 0 8px}
-.metric{display:grid;gap:5px}
-.pill{background:#0e1628;border:1px solid var(--l);border-radius:10px;padding:8px;font-size:11px}
-.pill b{display:block;font-size:15px;margin-top:2px}
-input,select,button,textarea{width:100%;max-width:100%;border:1px solid var(--l);border-radius:10px;background:#0d1526;color:var(--t);padding:10px;font-size:15px}
-button{border:0;background:var(--a);color:#071510;font-weight:800}
-.secondary{background:#26334d;color:#fff!important}
-.danger{background:var(--d)!important;color:#fff!important}
-.small{width:auto!important;padding:5px 8px!important;font-size:11px!important}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}
-.item{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--l)}
-.tablewrap{overflow:auto}
-.table{border-collapse:collapse;min-width:620px;width:100%}
-.table th,.table td{padding:7px 4px;border-bottom:1px solid var(--l);font-size:11px;text-align:left}
-.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.day{min-height:62px;padding:4px;border:1px solid var(--l);border-radius:8px;font-size:10px;overflow:hidden}
-.sun{background:#291724}.sat{background:#142440}.today{border:2px solid var(--a);background:#153a31}.closed{border:2px solid #aab2c0;background:#30333b}
-.dot{font-size:8px;background:#5d4720;border-radius:4px;padding:2px;margin-top:3px}
-.bar{height:9px;background:#0d1526;border-radius:20px;overflow:hidden}.bar i{display:block;height:100%;background:var(--a)}
-#nav{position:fixed;left:0;right:0;bottom:0;z-index:99999;display:flex;overflow-x:auto;background:#0a1120;border-top:1px solid var(--l);padding:6px 7px calc(6px + env(safe-area-inset-bottom));transform:translate3d(0,0,0);backface-visibility:hidden}
-#nav button{flex:0 0 88px;background:transparent;color:var(--m);font-size:10px;padding:8px 3px}
-#nav button.sel{background:#172239;color:var(--a)}
-</style></head><body><main>
+
+:root{
+ --bg:#0b1020;
+ --panel:#131b2e;
+ --line:#293650;
+ --text:#f5f7fb;
+ --muted:#93a2bb;
+ --accent:#63d6b5;
+ --danger:#ff6b78;
+}
+
+*{
+ box-sizing:border-box;
+}
+
+html{
+ background:var(--bg);
+ min-height:100%;
+}
+
+body{
+ margin:0;
+ min-height:100%;
+ background:var(--bg);
+ color:var(--text);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ overflow-x:hidden;
+ padding:0;
+}
+
+main{
+ width:100%;
+ max-width:980px;
+ margin:0 auto;
+
+ /* iPhone上部の時刻と重ならない */
+ padding-top:max(18px,env(safe-area-inset-top));
+
+ padding-left:10px;
+ padding-right:10px;
+
+ /* 下メニュー分の余白 */
+ padding-bottom:calc(105px + env(safe-area-inset-bottom));
+}
+
+.page{
+ display:none;
+}
+
+.page.on{
+ display:block;
+}
+
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-end;
+ gap:10px;
+ margin:4px 0 12px;
+}
+
+.brand{
+ font-weight:900;
+ font-size:20px;
+ letter-spacing:.07em;
+}
+
+.muted{
+ color:var(--muted);
+ font-size:12px;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+}
+
+.card{
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:11px;
+ margin-bottom:9px;
+ min-width:0;
+}
+
+.wide{
+ grid-column:1/-1;
+}
+
+h2{
+ font-size:14px;
+ margin:0 0 8px;
+}
+
+.metric{
+ display:grid;
+ gap:5px;
+}
+
+.pill{
+ background:#0e1628;
+ border:1px solid var(--line);
+ border-radius:10px;
+ padding:8px;
+ font-size:11px;
+ min-width:0;
+}
+
+.pill b{
+ display:block;
+ font-size:15px;
+ margin-top:2px;
+ word-break:break-word;
+}
+
+input,
+select,
+button,
+textarea{
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ border:1px solid var(--line);
+ border-radius:10px;
+ background:#0d1526;
+ color:var(--text);
+ padding:10px;
+ font-size:15px;
+}
+
+button{
+ border:0;
+ background:var(--accent);
+ color:#071510;
+ font-weight:800;
+ cursor:pointer;
+}
+
+.secondary{
+ background:#26334d;
+ color:#fff !important;
+}
+
+.danger{
+ background:var(--danger) !important;
+ color:#fff !important;
+}
+
+/* 削除ボタン小型化 */
+.small{
+ width:auto !important;
+ min-width:auto !important;
+ padding:5px 8px !important;
+ font-size:11px !important;
+ border-radius:7px !important;
+}
+
+.row{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ gap:7px;
+ margin:7px 0;
+}
+
+.item{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) auto;
+ gap:6px;
+ align-items:center;
+ padding:8px 0;
+ border-bottom:1px solid var(--line);
+}
+
+.tablewrap{
+ width:100%;
+ overflow-x:auto;
+ -webkit-overflow-scrolling:touch;
+}
+
+.table{
+ border-collapse:collapse;
+ min-width:650px;
+ width:100%;
+}
+
+.table th,
+.table td{
+ padding:7px 4px;
+ border-bottom:1px solid var(--line);
+ font-size:11px;
+ text-align:left;
+ white-space:nowrap;
+}
+
+.cal{
+ display:grid;
+ grid-template-columns:repeat(7,minmax(0,1fr));
+ gap:4px;
+ width:100%;
+}
+
+.day{
+ min-height:62px;
+ padding:4px;
+ border:1px solid var(--line);
+ border-radius:8px;
+ font-size:10px;
+ overflow:hidden;
+}
+
+.sun{
+ background:#291724;
+}
+
+.sat{
+ background:#142440;
+}
+
+.today{
+ border:2px solid var(--accent);
+ background:#153a31;
+}
+
+.closed{
+ border:2px solid #aab2c0;
+ background:#30333b;
+}
+
+.dot{
+ font-size:8px;
+ background:#5d4720;
+ border-radius:4px;
+ padding:2px;
+ margin-top:3px;
+ overflow:hidden;
+ text-overflow:ellipsis;
+}
+
+.bar{
+ height:9px;
+ background:#0d1526;
+ border-radius:20px;
+ overflow:hidden;
+}
+
+.bar i{
+ display:block;
+ height:100%;
+ background:var(--accent);
+}
+
+/* 行事枠が無駄に縦長にならない */
+#homeEv{
+ min-height:0;
+}
+
+#home .wide{
+ min-height:0;
+}
+
+/* 下部バー完全固定 */
+#nav{
+ position:fixed !important;
+ left:0 !important;
+ right:0 !important;
+ bottom:0 !important;
+ top:auto !important;
+
+ z-index:999999;
+
+ display:flex;
+ overflow-x:auto;
+ overflow-y:hidden;
+
+ margin:0 !important;
+
+ background:rgba(10,17,32,.98);
+ border-top:1px solid var(--line);
+
+ padding:
+ 6px
+ 7px
+ calc(6px + env(safe-area-inset-bottom));
+
+ transform:none !important;
+ -webkit-transform:none !important;
+
+ overscroll-behavior:none;
+ -webkit-overflow-scrolling:touch;
+}
+
+#nav button{
+ flex:0 0 88px;
+ width:88px;
+ background:transparent;
+ color:var(--muted);
+ font-size:10px;
+ padding:8px 3px;
+ border-radius:9px;
+}
+
+#nav button.sel{
+ background:#172239;
+ color:var(--accent);
+}
+
+/* iPhone */
+@media(max-width:600px){
+
+ main{
+  padding-top:max(16px,env(safe-area-inset-top));
+  padding-left:10px;
+  padding-right:10px;
+  padding-bottom:calc(100px + env(safe-area-inset-bottom));
+ }
+
+ .brand{
+  font-size:19px;
+ }
+
+ .grid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .card{
+  padding:10px;
+ }
+
+}
+
+/* かなり小さい画面でも崩さない */
+@media(max-width:360px){
+
+ .grid{
+  gap:6px;
+ }
+
+ .card{
+  padding:8px;
+ }
+
+ .pill{
+  padding:7px;
+ }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<main>
+
+<!-- ホーム -->
 
 <section id="home" class="page on">
-<div class="top"><div><div class="brand">TENCHO ONE</div><div class="muted">あなたのお店に、もう1人の店長を。</div></div><div id="today" class="muted"></div></div>
+
+<div class="top">
+
+<div>
+<div class="brand">TENCHO ONE</div>
+<div class="muted">あなたのお店に、もう1人の店長を。</div>
+</div>
+
+<div id="today" class="muted"></div>
+
+</div>
+
 <div class="grid">
-<div class="card"><h2>売上</h2><div class="metric">
-<div class="pill">当日の前年売上<b id="hyS">¥0</b></div>
-<div class="pill">昨日まで<b id="cumS">¥0</b></div>
-<div class="pill">前年比<b id="yoyS">-</b></div>
-<div class="pill">前年まで<b id="gapS">-</b></div>
-</div></div>
 
-<div class="card"><h2>客数</h2><div class="metric">
-<div class="pill">当日の前年客数<b id="hyC">0人</b></div>
-<div class="pill">昨日まで<b id="cumC">0人</b></div>
-<div class="pill">前年比<b id="yoyC">-</b></div>
-<div class="pill">前年まで<b id="gapC">-</b></div>
-</div></div>
+<div class="card">
 
-<div class="card"><h2>デリバリー</h2><div class="metric">
-<div class="pill">当日の前年売上<b id="hyD">¥0</b></div>
-<div class="pill">昨日まで<b id="cumD">¥0</b></div>
-<div class="pill">前年比<b id="yoyD">-</b></div>
-<div class="pill">前年まで<b id="gapD">-</b></div>
-</div></div>
+<h2>売上</h2>
 
-<div class="card"><h2>仕入れ・利益</h2><div class="metric">
-<div class="pill">仕入れ金（税込換算）<b id="purT">¥0</b></div>
-<div class="pill">原価率<b id="rateT">0%</b></div>
-<div class="pill">粗利益<b id="profitT">¥0</b></div>
-</div></div>
+<div class="metric">
 
-<div class="card wide"><h2>直近の行事・支払い</h2><div id="homeEv"></div></div>
+<div class="pill">
+当日の前年売上
+<b id="hyS">¥0</b>
+</div>
+
+<div class="pill">
+昨日までの売上累計
+<b id="cumS">¥0</b>
+</div>
+
+<div class="pill">
+昨日までの前年比
+<b id="yoyS">-</b>
+</div>
+
+<div class="pill">
+前年まで
+<b id="gapS">-</b>
+</div>
+
+</div>
+</div>
+
+
+<div class="card">
+
+<h2>客数</h2>
+
+<div class="metric">
+
+<div class="pill">
+当日の前年客数
+<b id="hyC">0人</b>
+</div>
+
+<div class="pill">
+昨日までの客数累計
+<b id="cumC">0人</b>
+</div>
+
+<div class="pill">
+昨日までの前年比
+<b id="yoyC">-</b>
+</div>
+
+<div class="pill">
+前年まで
+<b id="gapC">-</b>
+</div>
+
+</div>
+</div>
+
+
+<div class="card">
+
+<h2>デリバリー</h2>
+
+<div class="metric">
+
+<div class="pill">
+当日の前年売上
+<b id="hyD">¥0</b>
+</div>
+
+<div class="pill">
+昨日までのデリバリー累計
+<b id="cumD">¥0</b>
+</div>
+
+<div class="pill">
+昨日までの前年比
+<b id="yoyD">-</b>
+</div>
+
+<div class="pill">
+前年まで
+<b id="gapD">-</b>
+</div>
+
+</div>
+</div>
+
+
+<div class="card">
+
+<h2>仕入れ・利益</h2>
+
+<div class="metric">
+
+<div class="pill">
+昨日までの仕入れ金合計
+<b id="purT">¥0</b>
+</div>
+
+<div class="pill">
+昨日までの原価率
+<b id="rateT">0%</b>
+</div>
+
+<div class="pill">
+昨日までの粗利益
+<b id="profitT">¥0</b>
+</div>
+
+</div>
+</div>
+
+
+<div class="card wide">
+
+<h2>直近の行事・支払い</h2>
+
+<div id="homeEv">
+<div class="muted">予定なし</div>
+</div>
+
+</div>
+
 </div>
 </section>
+
+
+<!-- 売上・客数 -->
 
 <section id="sales" class="page">
-<div class="top"><div class="brand">売上・客数</div></div>
+
+<div class="top">
+<div class="brand">売上・客数</div>
+</div>
+
 <div class="card">
+
 <input id="sdate" type="date">
-<div id="pretty" class="muted" style="margin-top:5px"></div>
-<div class="row"><input id="sv" type="number" placeholder="売上（税込）"><input id="cv" type="number" placeholder="客数"></div>
-<button onclick="saveSales()">売上・客数を保存</button>
-</div>
 
-<div class="card"><h2>仕入れ金</h2>
-<div class="muted">税抜で入力 → 原価率は税込換算</div>
-<input id="pv" type="number" placeholder="仕入れ金（税抜）">
-<button onclick="addPurchase()" style="margin-top:6px">追加</button>
-<div id="pList"></div>
-</div>
-
-<div class="card"><h2>デリバリー</h2>
-<div class="row"><select id="dsvc"></select><input id="dv" type="number" placeholder="売上（税込）"></div>
-<button onclick="addDelivery()">追加</button>
-<div id="dList"></div>
-</div>
-
-<div class="card"><h2>売上実績</h2>
-<div class="row"><button class="secondary" onclick="moveSales(-1)">← 前月</button><button class="secondary" onclick="moveSales(1)">次月 →</button></div>
-<h2 id="salesTitle"></h2>
-<div class="tablewrap"><table class="table"><thead><tr><th>日付</th><th>店頭</th><th>デリバリー</th><th>合計</th><th>客数</th><th>客単価</th></tr></thead><tbody id="salesRows"></tbody></table></div>
-</div>
-</section>
-
-<section id="products" class="page">
-<div class="top"><div class="brand">商品登録</div></div>
-<div class="card">
-<input id="pn" placeholder="商品名">
-<div class="row"><input id="bp" type="number" placeholder="仕入価格（税抜）"><input id="bq" type="number" placeholder="仕入数量"></div>
-<div class="row"><select id="unit"><option>g</option><option>kg</option><option>枚</option><option>個</option><option>尾</option><option>本</option><option>P</option></select><select id="cat"></select></div>
-<div class="row"><input id="usable" type="number" placeholder="使用可能量"><input id="cooked" type="number" placeholder="調理後重量/数量"></div>
-<div class="row"><input id="yieldv" type="number" value="100" placeholder="歩留まり%"><input id="pack" type="number" placeholder="1P入数"></div>
-<div class="pill">実質単価<b id="uc">¥0.0</b></div>
-<input id="edit" type="hidden">
-<button onclick="saveProduct()" style="margin-top:6px">保存</button>
-</div>
-
-<div class="card"><h2>カテゴリ管理</h2>
-<div class="row"><input id="newcat" placeholder="冷凍、まぐろ、乾物、容器など"><button onclick="addCat()">追加</button></div>
-<div id="catList"></div>
-</div>
-
-<div class="card"><div class="tablewrap"><table class="table"><thead><tr><th>商品</th><th>カテゴリ</th><th>実質単価</th><th></th></tr></thead><tbody id="prodRows"></tbody></table></div></div>
-</section>
-
-<section id="calendar" class="page">
-<div class="top"><div class="brand">カレンダー</div></div>
-<div class="card">
-<div class="row"><button class="secondary" onclick="moveCal(-1)">←</button><button class="secondary" onclick="moveCal(1)">→</button></div>
-<h2 id="calTitle"></h2><div id="cal" class="cal"></div>
-</div>
-<div class="card" style="overflow:hidden">
-<input id="edate" type="date">
-<input id="etitle" placeholder="行事・支払い名" style="margin-top:6px">
-<select id="etype" style="margin-top:6px"><option value="event">イベント</option><option value="pay">支払い</option><option value="biz">店舗行事</option><option value="closed">定休日</option></select>
-<button onclick="addEvent()" style="margin-top:6px">登録</button>
-</div>
-</section>
-
-<section id="stock" class="page">
-<div class="top"><div class="brand">棚卸し</div></div>
-<div class="card">
-<select id="stockFilter" onchange="renderStock()"></select>
-<div id="stockRows"></div>
-<button onclick="saveStock()">棚卸しを保存・計算</button>
-<div id="stockTotal" style="font-size:24px;font-weight:900;margin-top:8px">¥0</div>
-</div>
-</section>
-
-<section id="analysis" class="page">
-<div class="top"><div class="brand">棚卸し分析</div></div>
-<div class="card">
-<div class="row"><button class="secondary" onclick="moveAna(-1)">← 前月</button><button class="secondary" onclick="moveAna(1)">次月 →</button></div>
-<h2 id="anaTitle"></h2>
-<div class="metric">
-<div class="pill">仕入れ（税込換算）<b id="anaP">¥0</b></div>
-<div class="pill">売上<b id="anaS">¥0</b></div>
-<div class="pill">原価率<b id="anaR">0%</b></div>
-<div class="pill">最新棚卸し<b id="anaSt">¥0</b></div>
-</div></div>
-<div class="card"><h2>カテゴリ構成</h2><div id="anaCats"></div></div>
-</section>
-
-</main>
-<nav id="nav"></nav>
-
-<script>
-const K='tencho_one_v5_',
-L=(k,d=[])=>{try{return JSON.parse(localStorage.getItem(K+k)||JSON.stringify(d))}catch(e){return d}},
-S=(k,v)=>localStorage.setItem(K+k,JSON.stringify(v)),
-Y=n=>'¥'+Math.round(+n||0).toLocaleString('ja-JP'),
-T=1.1;
-
-let products=L('products'),
-sales=L('sales'),
-events=L('events'),
-purchases=L('purchases',[]),
-deliverySales=L('deliverySales',[]),
-deliveryServices=L('deliveryServices',[
-{id:'uber',name:'Uber',fee:35},
-{id:'demaekan',name:'出前館',fee:35},
-{id:'menu',name:'menu',fee:35},
-{id:'rocket',name:'ロケット',fee:0}
-]),
-cats=L('categories',['冷凍','まぐろ','乾物','容器','その他']),
-stocks=L('stockHistory',[]);
-
-const pages=[
-['home','ホーム'],
-['sales','売上・客数'],
-['products','商品登録'],
-['calendar','カレンダー'],
-['stock','棚卸し'],
-['analysis','棚卸し分析']
-];
-
-nav.innerHTML=pages.map((p,i)=>`<button class="${i?'':'sel'}" onclick="go('${p[0]}',this)">${p[1]}</button>`).join('');
-
-function go(id,b){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
-document.getElementById(id).classList.add('on');
-document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('sel'));
-b.classList.add('sel');
-if(id==='stock')renderStock();
-if(id==='analysis')renderAna();
-}
-
-function iso(d=new Date()){
-return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-}
-
-function pd(v){
-let d=new Date(v+'T00:00:00'),w='日月火水木金土';
-return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}（${w[d.getDay()]}）`
-}
-
-today.textContent=pd(iso());
-sdate.value=edate.value=iso();
-
-function loadDay(){
-pretty.textContent=pd(sdate.value);
-edate.value=sdate.value;
-let r=sales.find(x=>x.date===sdate.value);
-sv.value=r?.s??'';
-cv.value=r?.c??'';
-renderP();
-renderD();
-}
-sdate.onchange=loadDay;
-
-function saveSales(){
-let r=sales.find(x=>x.date===sdate.value);
-if(r){r.s=+sv.value||0;r.c=+cv.value||0}
-else sales.push({date:sdate.value,s:+sv.value||0,c:+cv.value||0});
-S('sales',sales);
-renderSales();
-home();
-}
-
-function pinc(x){
-return (+x.amount||0)*(x.taxMode==='ex'?T:1)
-}
-
-function addPurchase(){
-if(!+pv.value)return;
-purchases.push({id:Date.now(),date:sdate.value,amount:+pv.value,taxMode:'ex'});
-S('purchases',purchases);
-pv.value='';
-renderP();
-home();
-renderAna();
-}
-
-function delP(id){
-purchases=purchases.filter(x=>x.id!==id);
-S('purchases',purchases);
-renderP();
-home();
-}
-
-function renderP(){
-let a=purchases.filter(x=>x.date===sdate.value);
-pList.innerHTML=a.map(x=>`<div class="item"><div>${Y(x.amount)} 税抜<div class="muted">税込 ${Y(pinc(x))}</div></div><button class="danger small" onclick="delP(${x.id})">削除</button></div>`).join('')||'<div class="muted">登録なし</div>';
-}
-
-function renderSvc(){
-dsvc.innerHTML=deliveryServices.map(x=>`<option value="${x.id}">${x.name}（${x.fee}%）</option>`).join('');
-}
-
-function addDelivery(){
-let x=deliveryServices.find(x=>x.id===dsvc.value);
-if(!x||!+dv.value)return;
-deliverySales.push({
-id:Date.now(),date:sdate.value,
-serviceId:x.id,serviceName:x.name,
-fee:x.fee,gross:+dv.value,
-net:+dv.value*(1-x.fee/100)
-});
-S('deliverySales',deliverySales);
-dv.value='';
-renderD();
-renderSales();
-home();
-}
-
-function delD(id){
-deliverySales=deliverySales.filter(x=>x.id!==id);
-S('deliverySales',deliverySales);
-renderD();
-renderSales();
-home();
-}
-
-function renderD(){
-let a=deliverySales.filter(x=>x.date===sdate.value);
-dList.innerHTML=a.map(x=>`<div class="item"><div>${x.serviceName} ${Y(x.gross)}</div><button class="danger small" onclick="delD(${x.id})">削除</button></div>`).join('')||'<div class="muted">登録なし</div>';
-}<script>
-let salesDate=new Date();
-
-function moveSales(n){
-salesDate.setMonth(salesDate.getMonth()+n);
-renderSales();
-}
-
-function renderSales(){
-let ym=`${salesDate.getFullYear()}-${String(salesDate.getMonth()+1).padStart(2,'0')}`;
-salesTitle.textContent=`${salesDate.getFullYear()}年${salesDate.getMonth()+1}月`;
-
-let ds=[...new Set([
-...sales.filter(x=>x.date.startsWith(ym)).map(x=>x.date),
-...deliverySales.filter(x=>x.date.startsWith(ym)).map(x=>x.date)
-])].sort().reverse();
-
-salesRows.innerHTML=ds.map(d=>{
-let r=sales.find(x=>x.date===d)||{s:0,c:0};
-let dv=deliverySales.filter(x=>x.date===d).reduce((a,x)=>a+(+x.gross||0),0);
-let tt=(+r.s||0)+dv;
-
-return `<tr>
-<td>${pd(d)}</td>
-<td>${Y(r.s)}</td>
-<td>${Y(dv)}</td>
-<td>${Y(tt)}</td>
-<td>${r.c||0}</td>
-<td>${Y(r.c?tt/r.c:0)}</td>
-</tr>`;
-}).join('');
-}
-
-function home(){
-let n=new Date();
-let y=n.getFullYear(),m=n.getMonth();
-
-let st=`${y}-${String(m+1).padStart(2,'0')}-01`;
-let yd=new Date(y,m,n.getDate()-1);
-let en=iso(yd);
-
-let lst=`${y-1}-${String(m+1).padStart(2,'0')}-01`;
-let len=`${y-1}-${String(m+1).padStart(2,'0')}-${String(yd.getDate()).padStart(2,'0')}`;
-let lt=`${y-1}-${String(m+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-
-let bt=(x,a,b)=>x.date>=a&&x.date<=b;
-
-let c=sales.filter(x=>bt(x,st,en));
-let l=sales.filter(x=>bt(x,lst,len));
-
-let cs=c.reduce((a,x)=>a+(+x.s||0),0);
-let cc=c.reduce((a,x)=>a+(+x.c||0),0);
-let ls=l.reduce((a,x)=>a+(+x.s||0),0);
-let lc=l.reduce((a,x)=>a+(+x.c||0),0);
-
-let lr=sales.find(x=>x.date===lt);
-
-hyS.textContent=Y(lr?.s);
-hyC.textContent=(lr?.c||0)+'人';
-
-cumS.textContent=Y(cs);
-cumC.textContent=cc+'人';
-
-yoyS.textContent=ls?(cs/ls*100).toFixed(1)+'%':'-';
-yoyC.textContent=lc?(cc/lc*100).toFixed(1)+'%':'-';
-
-gapS.textContent=cs>=ls
-?'前年超え +'+Y(cs-ls)
-:'あと '+Y(ls-cs);
-
-gapC.textContent=cc>=lc
-?'前年超え +'+(cc-lc)+'人'
-:'あと '+(lc-cc)+'人';
-
-let dc=deliverySales.filter(x=>bt(x,st,en));
-let dl=deliverySales.filter(x=>bt(x,lst,len));
-
-let dcs=dc.reduce((a,x)=>a+(+x.gross||0),0);
-let dls=dl.reduce((a,x)=>a+(+x.gross||0),0);
-
-let dt=deliverySales
-.filter(x=>x.date===lt)
-.reduce((a,x)=>a+(+x.gross||0),0);
-
-hyD.textContent=Y(dt);
-cumD.textContent=Y(dcs);
-
-yoyD.textContent=dls
-?(dcs/dls*100).toFixed(1)+'%'
-:'-';
-
-gapD.textContent=dcs>=dls
-?'前年超え +'+Y(dcs-dls)
-:'あと '+Y(dls-dcs);
-
-let p=purchases
-.filter(x=>bt(x,st,en))
-.reduce((a,x)=>a+pinc(x),0);
-
-purT.textContent=Y(p);
-
-/* 原価率・利益を仕入れ金から即時計算 */
-rateT.textContent=(cs?p/cs*100:0).toFixed(1)+'%';
-profitT.textContent=Y(cs-p);
-
-let e=events
-.filter(x=>x.date>=iso())
-.sort((a,b)=>a.date.localeCompare(b.date))
-.slice(0,4);
-
-homeEv.innerHTML=e.map(x=>
-`<div class="pill">${pd(x.date)}　${x.title}</div>`
-).join('')||'<div class="muted">予定なし</div>';
-}
-
-function renderCats(){
-cat.innerHTML=cats.map(x=>`<option>${x}</option>`).join('');
-
-stockFilter.innerHTML=
-'<option value="">全カテゴリ</option>'+
-cats.map(x=>`<option>${x}</option>`).join('');
-
-catList.innerHTML=cats.map(x=>
-`<div class="item">
-<b>${x}</b>
-<button class="danger small" onclick="delCat('${x}')">削除</button>
-</div>`
-).join('');
-}
-
-function addCat(){
-let x=newcat.value.trim();
-
-if(x&&!cats.includes(x)){
-cats.push(x);
-S('categories',cats);
-newcat.value='';
-renderCats();
-}
-}
-
-function delCat(x){
-if(products.some(p=>(p.category||'その他')===x)){
-alert('使用中のカテゴリです');
-return;
-}
-
-cats=cats.filter(c=>c!==x);
-S('categories',cats);
-renderCats();
-}
-
-function preview(){
-let q=+bq.value||0;
-let u=unit.value;
-
-let base=u==='kg'?q*1000:q;
-let bu=u==='kg'?'g':u;
-
-/* 調理後重量を最優先 */
-let fin=
-+cooked.value||
-+usable.value||
-base*((+yieldv.value||100)/100);
-
-/* 税抜仕入価格 → 税込原価 */
-let cost=fin
-?(+bp.value||0)*T/fin
-:0;
-
-/* 小数点1桁 */
-uc.textContent=`¥${cost.toFixed(1)} / 1${bu}`;
-}
-
-[bp,bq,unit,usable,cooked,yieldv].forEach(x=>{
-x.oninput=preview;
-});
-
-function saveProduct(){
-
-if(!pn.value)return;
-
-let q=+bq.value||0;
-let u=unit.value;
-
-let base=u==='kg'?q*1000:q;
-let bu=u==='kg'?'g':u;
-
-let fin=
-+cooked.value||
-+usable.value||
-base*((+yieldv.value||100)/100);
-
-let cost=fin
-?(+bp.value||0)*T/fin
-:0;
-
-let id=+edit.value;
-
-let o={
-id:id||Date.now(),
-name:pn.value,
-buyPrice:+bp.value||0,
-buyQty:q,
-inputUnit:u,
-unit:bu,
-cost:cost,
-yield:+yieldv.value||100,
-usableQty:+usable.value||0,
-cookedQty:+cooked.value||0,
-packQty:+pack.value||0,
-category:cat.value||'その他',
-priceTaxMode:'ex'
-};
-
-products=id
-?products.map(x=>x.id===id?o:x)
-:[...products,o];
-
-S('products',products);
-
-pn.value='';
-bp.value='';
-bq.value='';
-usable.value='';
-cooked.value='';
-pack.value='';
-edit.value='';
-yieldv.value=100;
-
-renderProducts();
-renderStock();
-preview();
-}
-
-function editP(id){
-
-let p=products.find(x=>x.id===id);
-if(!p)return;
-
-pn.value=p.name;
-bp.value=p.buyPrice||0;
-bq.value=p.buyQty||0;
-unit.value=p.inputUnit||p.unit;
-usable.value=p.usableQty||'';
-cooked.value=p.cookedQty||'';
-yieldv.value=p.yield||100;
-pack.value=p.packQty||'';
-cat.value=p.category||'その他';
-edit.value=id;
-
-preview();
-}
-
-function delProd(id){
-if(!confirm('この商品を削除しますか？'))return;
-
-products=products.filter(x=>x.id!==id);
-S('products',products);
-
-renderProducts();
-renderStock();
-}
-
-function renderProducts(){
-
-prodRows.innerHTML=products.map(p=>
-`<tr>
-<td>${p.name}</td>
-<td>${p.category||'その他'}</td>
-<td>¥${(+p.cost||0).toFixed(1)}/1${p.unit}</td>
-<td>
-<button class="secondary small" onclick="editP(${p.id})">変更</button>
-<button class="danger small" onclick="delProd(${p.id})">削除</button>
-</td>
-</tr>`
-).join('');
-}
-
-/* カレンダー */
-
-let calDate=new Date();
-
-function moveCal(n){
-calDate.setMonth(calDate.getMonth()+n);
-renderCal();
-}
-
-function renderCal(){
-
-let y=calDate.getFullYear();
-let m=calDate.getMonth();
-
-let f=new Date(y,m,1).getDay();
-let days=new Date(y,m+1,0).getDate();
-
-calTitle.textContent=`${y}年${m+1}月`;
-
-let h='日月火水木金土'
-.split('')
-.map(x=>`<b class="muted">${x}</b>`)
-.join('');
-
-for(let i=0;i<f;i++){
-h+='<span></span>';
-}
-
-for(let d=1;d<=days;d++){
-
-let dt=
-`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-
-let dw=new Date(y,m,d).getDay();
-
-let es=events.filter(x=>x.date===dt);
-
-let cl=es.some(x=>x.type==='closed');
-
-h+=`
-<div class="day
-${dw===0?'sun':dw===6?'sat':''}
-${dt===iso()?'today':''}
-${cl?'closed':''}"
-onclick="edate.value='${dt}'">
-
-<b>${d}</b>
-
-${es.map(x=>
-`<div class="dot">${x.title}</div>`
-).join('')}
-
-</div>`;
-}
-
-cal.innerHTML=h;
-}
-
-function addEvent(){
-
-let t=etitle.value.trim();
-
-if(etype.value==='closed'&&!t){
-t='定休日';
-}
-
-if(!t)return;
-
-events.push({
-date:edate.value,
-title:t,
-type:etype.value
-});
-
-S('events',events);
-
-etitle.value='';
-
-renderCal();
-home();
-}
-
-/* 棚卸し */
-
-function renderStock(){
-
-let f=stockFilter.value;
-
-let ps=products.filter(p=>
-!f||(p.category||'その他')===f
-);
-
-stockRows.innerHTML=ps.map(p=>
-`<div class="card" data-id="${p.id}">
-
-<b>${p.name}</b>
-
-<div class="muted">
-${p.category||'その他'}
-/
-1P=${p.packQty||'?'}${p.unit}
+<div id="pretty"
+class="muted"
+style="margin-top:5px">
 </div>
 
 <div class="row">
-<input class="pk" type="number" placeholder="未開封 ○P">
-<input class="op" type="number" placeholder="開封済み ○${p.unit}">
+
+<input
+id="sv"
+type="number"
+inputmode="numeric"
+placeholder="売上（税込）">
+
+<input
+id="cv"
+type="number"
+inputmode="numeric"
+placeholder="客数">
+
 </div>
 
-<div class="muted sum">¥0</div>
+<button onclick="saveSales()">
+売上・客数を保存
+</button>
 
-</div>`
+</div>
+
+
+<div class="card">
+
+<h2>仕入れ金</h2>
+
+<div class="muted">
+税抜金額を入力してください。原価率計算では税込換算します。
+</div>
+
+<input
+id="pv"
+type="number"
+inputmode="numeric"
+placeholder="仕入れ金（税抜）"
+style="margin-top:7px">
+
+<button
+onclick="addPurchase()"
+style="margin-top:6px">
+追加
+</button>
+
+<div id="pList"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>デリバリー</h2>
+
+<div class="row">
+
+<select id="dsvc"></select>
+
+<input
+id="dv"
+type="number"
+inputmode="numeric"
+placeholder="売上（税込）">
+
+</div>
+
+<button onclick="addDelivery()">
+追加
+</button>
+
+<div id="dList"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>売上実績</h2>
+
+<div class="row">
+
+<button
+class="secondary"
+onclick="moveSales(-1)">
+← 前月
+</button>
+
+<button
+class="secondary"
+onclick="moveSales(1)">
+次月 →
+</button>
+
+</div>
+
+<h2 id="salesTitle"></h2>
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+<tr>
+<th>日付</th>
+<th>店頭売上</th>
+<th>デリバリー</th>
+<th>合計売上</th>
+<th>客数</th>
+<th>客単価</th>
+</tr>
+</thead>
+
+<tbody id="salesRows"></tbody>
+
+</table>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- 商品登録 -->
+
+<section id="products" class="page">
+
+<div class="top">
+<div class="brand">商品登録</div>
+</div>
+
+<div class="card">
+
+<input
+id="pn"
+placeholder="商品名">
+
+<div class="row">
+
+<input
+id="bp"
+type="number"
+inputmode="decimal"
+placeholder="仕入価格（税抜）">
+
+<input
+id="bq"
+type="number"
+inputmode="decimal"
+placeholder="仕入数量">
+
+</div>
+
+
+<div class="row">
+
+<select id="unit">
+
+<option value="g">g</option>
+<option value="kg">kg</option>
+<option value="枚">枚</option>
+<option value="個">個</option>
+<option value="尾">尾</option>
+<option value="本">本</option>
+<option value="P">P</option>
+
+</select>
+
+<select id="cat"></select>
+
+</div>
+
+
+<div class="row">
+
+<input
+id="usable"
+type="number"
+inputmode="decimal"
+placeholder="実際に使える量">
+
+<input
+id="cooked"
+type="number"
+inputmode="decimal"
+placeholder="調理後重量・数量">
+
+</div>
+
+<div class="muted">
+米などは「調理後重量」に炊き上がり後のg数を入力できます。
+</div>
+
+
+<div class="row">
+
+<input
+id="yieldv"
+type="number"
+inputmode="decimal"
+value="100"
+placeholder="歩留まり％">
+
+<input
+id="pack"
+type="number"
+inputmode="decimal"
+placeholder="1Pあたりの入数">
+
+</div>
+
+
+<div class="pill">
+
+実質単価
+<b id="uc">¥0.0</b>
+
+</div>
+
+<input id="edit" type="hidden">
+
+<button
+onclick="saveProduct()"
+style="margin-top:6px">
+保存
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>カテゴリ管理</h2>
+
+<div class="row">
+
+<input
+id="newcat"
+placeholder="冷凍、まぐろ、乾物、容器など">
+
+<button onclick="addCat()">
+追加
+</button>
+
+</div>
+
+<div id="catList"></div>
+
+</div>
+
+
+<div class="card">
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+<tr>
+<th>商品</th>
+<th>カテゴリ</th>
+<th>実質単価</th>
+<th>操作</th>
+</tr>
+</thead>
+
+<tbody id="prodRows"></tbody>
+
+</table>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- カレンダー -->
+
+<section id="calendar" class="page">
+
+<div class="top">
+<div class="brand">カレンダー</div>
+</div>
+
+<div class="card">
+
+<div class="row">
+
+<button
+class="secondary"
+onclick="moveCal(-1)">
+← 前月
+</button>
+
+<button
+class="secondary"
+onclick="moveCal(1)">
+次月 →
+</button>
+
+</div>
+
+<h2 id="calTitle"></h2>
+
+<div id="cal" class="cal"></div>
+
+</div>
+
+
+<div class="card">
+
+<input
+id="edate"
+type="date">
+
+<input
+id="etitle"
+placeholder="行事・支払い名"
+style="margin-top:6px">
+
+<select
+id="etype"
+style="margin-top:6px">
+
+<option value="event">イベント</option>
+<option value="pay">支払い</option>
+<option value="biz">店舗行事</option>
+<option value="closed">定休日</option>
+
+</select>
+
+<button
+onclick="addEvent()"
+style="margin-top:6px">
+登録
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>登録済み</h2>
+
+<div id="eventList"></div>
+
+</div>
+
+</section>
+
+
+<!-- 棚卸し -->
+
+<section id="stock" class="page">
+
+<div class="top">
+<div class="brand">棚卸し</div>
+</div>
+
+<div class="card">
+
+<select
+id="stockFilter"
+onchange="renderStock()">
+</select>
+
+<div id="stockRows"></div>
+
+<button
+onclick="saveStock()"
+style="margin-top:8px">
+棚卸しを保存・計算
+</button>
+
+<div
+id="stockTotal"
+style="font-size:24px;font-weight:900;margin-top:8px">
+¥0
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 棚卸し分析 -->
+
+<section id="analysis" class="page">
+
+<div class="top">
+<div class="brand">棚卸し分析</div>
+</div>
+
+<div class="card">
+
+<div class="row">
+
+<button
+class="secondary"
+onclick="moveAna(-1)">
+← 前月
+</button>
+
+<button
+class="secondary"
+onclick="moveAna(1)">
+次月 →
+</button>
+
+</div>
+
+<h2 id="anaTitle"></h2>
+
+<div class="metric">
+
+<div class="pill">
+仕入れ（税込換算）
+<b id="anaP">¥0</b>
+</div>
+
+<div class="pill">
+売上
+<b id="anaS">¥0</b>
+</div>
+
+<div class="pill">
+原価率
+<b id="anaR">0%</b>
+</div>
+
+<div class="pill">
+最新棚卸し
+<b id="anaSt">¥0</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>カテゴリ構成</h2>
+
+<div id="anaCats"></div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav id="nav"></nav>
+
+
+<script>
+
+/*
+ TENCHO ONE
+ 既存データを消さないため
+ tencho_one_v5_ を継続使用
+*/
+
+const K='tencho_one_v5_';
+
+const L=(k,d=[])=>{
+ try{
+  return JSON.parse(
+   localStorage.getItem(K+k) ??
+   JSON.stringify(d)
+  );
+ }catch(e){
+  return d;
+ }
+};
+
+const S=(k,v)=>{
+ localStorage.setItem(
+  K+k,
+  JSON.stringify(v)
+ );
+};
+
+const Y=n=>
+ '¥'+Math.round(+n||0)
+ .toLocaleString('ja-JP');
+
+const TAX=1.1;
+
+
+let products=L('products',[]);
+let sales=L('sales',[]);
+let events=L('events',[]);
+let purchases=L('purchases',[]);
+let deliverySales=L('deliverySales',[]);
+
+let deliveryServices=L(
+ 'deliveryServices',
+ [
+  {id:'uber',name:'Uber',fee:35},
+  {id:'demaekan',name:'出前館',fee:35},
+  {id:'menu',name:'menu',fee:35},
+  {id:'rocket',name:'ロケット',fee:0}
+ ]
+);
+
+let cats=L(
+ 'categories',
+ ['冷凍','まぐろ','乾物','容器','その他']
+);
+
+let stocks=L('stockHistory',[]);
+
+
+const pages=[
+ ['home','ホーム'],
+ ['sales','売上・客数'],
+ ['products','商品登録'],
+ ['calendar','カレンダー'],
+ ['stock','棚卸し'],
+ ['analysis','棚卸分析']
+];
+
+
+document.getElementById('nav').innerHTML=
+pages.map((p,i)=>
+ `<button
+ class="${i===0?'sel':''}"
+ onclick="go('${p[0]}',this)">
+ ${p[1]}
+ </button>`
 ).join('');
+
+
+function go(id,b){
+
+ document
+ .querySelectorAll('.page')
+ .forEach(x=>x.classList.remove('on'));
+
+ document
+ .getElementById(id)
+ .classList.add('on');
+
+ document
+ .querySelectorAll('#nav button')
+ .forEach(x=>x.classList.remove('sel'));
+
+ b.classList.add('sel');
+
+ if(id==='home'){
+  home();
+ }
+
+ if(id==='sales'){
+  loadDay();
+  renderSales();
+ }
+
+ if(id==='products'){
+  renderProducts();
+ }
+
+ if(id==='calendar'){
+  renderCal();
+  renderEventList();
+ }
+
+ if(id==='stock'){
+  renderStock();
+ }
+
+ if(id==='analysis'){
+  renderAna();
+ }
+
+ window.scrollTo(0,0);
 }
+
+
+function iso(d=new Date()){
+
+ return (
+  d.getFullYear()+
+  '-'+
+  String(d.getMonth()+1).padStart(2,'0')+
+  '-'+
+  String(d.getDate()).padStart(2,'0')
+ );
+
+}
+
+
+function pd(v){
+
+ if(!v)return '';
+
+ let d=new Date(v+'T00:00:00');
+
+ let w=[
+  '日','月','火','水','木','金','土'
+ ];
+
+ return (
+  d.getFullYear()+
+  '/'+
+  String(d.getMonth()+1).padStart(2,'0')+
+  '/'+
+  String(d.getDate()).padStart(2,'0')+
+  '（'+w[d.getDay()]+'）'
+ );
+
+}
+
+
+document.getElementById('today').textContent=
+pd(iso());
+
+
+document.getElementById('sdate').value=iso();
+document.getElementById('edate').value=iso();
+
+
+function loadDay(){
+
+ let date=
+ document.getElementById('sdate').value;
+
+ document.getElementById('pretty')
+ .textContent=pd(date);
+
+ /*
+  売上・客数・デリバリー・仕入れの
+  日付を同じ日に連動
+ */
+ document.getElementById('edate').value=date;
+
+ let r=sales.find(x=>x.date===date);
+
+ document.getElementById('sv').value=
+ r?.s ?? '';
+
+ document.getElementById('cv').value=
+ r?.c ?? '';
+
+ renderP();
+ renderD();
+
+}
+
+
+document.getElementById('sdate')
+.addEventListener('change',loadDay);
+
+
+function saveSales(){
+
+ let date=
+ document.getElementById('sdate').value;
+
+ let sv=
+ +document.getElementById('sv').value||0;
+
+ let cv=
+ +document.getElementById('cv').value||0;
+
+ let r=sales.find(x=>x.date===date);
+
+ if(r){
+
+  r.s=sv;
+  r.c=cv;
+
+ }else{
+
+  sales.push({
+   date:date,
+   s:sv,
+   c:cv
+  });
+
+ }
+
+ S('sales',sales);
+
+ renderSales();
+ home();
+
+}
+
+
+function pinc(x){
+
+ /*
+  新規仕入れは税抜入力。
+  過去データとの互換性も残す。
+ */
+
+ if(x.taxMode==='ex'){
+  return (+x.amount||0)*TAX;
+ }
+
+ return +x.amount||0;
+
+}
+
+
+function addPurchase(){
+
+ let amount=
+ +document.getElementById('pv').value||0;
+
+ if(!amount)return;
+
+ purchases.push({
+
+  id:Date.now(),
+
+  date:
+  document.getElementById('sdate').value,
+
+  amount:amount,
+
+  taxMode:'ex'
+
+ });
+
+ S('purchases',purchases);
+
+ document.getElementById('pv').value='';
+
+ renderP();
+ home();
+ renderAna();
+
+}
+
+
+function delP(id){
+
+ purchases=
+ purchases.filter(x=>x.id!==id);
+
+ S('purchases',purchases);
+
+ renderP();
+ home();
+ renderAna();
+
+}
+
+
+function renderP(){
+
+ let date=
+ document.getElementById('sdate').value;
+
+ let a=
+ purchases.filter(x=>x.date===date);
+
+ document.getElementById('pList').innerHTML=
+ a.map(x=>
+
+ `<div class="item">
+
+ <div>
+ ${Y(x.amount)}
+ <span class="muted">
+ ${x.taxMode==='ex'?' 税抜':''}
+ </span>
+
+ <div class="muted">
+ 原価計算：
+ ${Y(pinc(x))}
+ </div>
+ </div>
+
+ <button
+ class="danger small"
+ onclick="delP(${x.id})">
+ 削除
+ </button>
+
+ </div>`
+
+ ).join('')
+ ||
+ '<div class="muted" style="padding-top:8px">登録なし</div>';
+
+}
+
+
+function renderSvc(){
+
+ document.getElementById('dsvc').innerHTML=
+ deliveryServices.map(x=>
+
+ `<option value="${x.id}">
+ ${x.name}（手数料${x.fee}%）
+ </option>`
+
+ ).join('');
+
+}
+
+
+function addDelivery(){
+
+ let id=
+ document.getElementById('dsvc').value;
+
+ let x=
+ deliveryServices.find(x=>x.id===id);
+
+ let gross=
+ +document.getElementById('dv').value||0;
+
+ if(!x||!gross)return;
+
+ deliverySales.push({
+
+  id:Date.now(),
+
+  date:
+  document.getElementById('sdate').value,
+
+  serviceId:x.id,
+
+  serviceName:x.name,
+
+  fee:x.fee,
+
+  gross:gross,
+
+  net:gross*(1-x.fee/100)
+
+ });
+
+ S('deliverySales',deliverySales);
+
+ document.getElementById('dv').value='';
+
+ renderD();
+ renderSales();
+ home();
+
+}
+
+
+function delD(id){
+
+ deliverySales=
+ deliverySales.filter(x=>x.id!==id);
+
+ S('deliverySales',deliverySales);
+
+ renderD();
+ renderSales();
+ home();
+
+}
+
+
+function renderD(){
+
+ let date=
+ document.getElementById('sdate').value;
+
+ let a=
+ deliverySales.filter(x=>x.date===date);
+
+ document.getElementById('dList').innerHTML=
+ a.map(x=>
+
+ `<div class="item">
+
+ <div>
+ ${x.serviceName}
+ ${Y(x.gross)}
+ </div>
+
+ <button
+ class="danger small"
+ onclick="delD(${x.id})">
+ 削除
+ </button>
+
+ </div>`
+
+ ).join('')
+ ||
+ '<div class="muted" style="padding-top:8px">登録なし</div>';
+
+}let salesDate=new Date();
+
+function moveSales(n){
+ salesDate.setMonth(salesDate.getMonth()+n);
+ renderSales();
+}
+
+function renderSales(){
+
+ let ym=
+ salesDate.getFullYear()+
+ '-'+
+ String(salesDate.getMonth()+1).padStart(2,'0');
+
+ document.getElementById('salesTitle').textContent=
+ `${salesDate.getFullYear()}年${salesDate.getMonth()+1}月`;
+
+ let dates=[
+  ...new Set([
+   ...sales
+   .filter(x=>x.date.startsWith(ym))
+   .map(x=>x.date),
+
+   ...deliverySales
+   .filter(x=>x.date.startsWith(ym))
+   .map(x=>x.date)
+  ])
+ ].sort();
+
+ document.getElementById('salesRows').innerHTML=
+ dates.map(date=>{
+
+  let r=
+  sales.find(x=>x.date===date)||
+  {s:0,c:0};
+
+  let d=
+  deliverySales
+  .filter(x=>x.date===date)
+  .reduce((a,x)=>a+(+x.gross||0),0);
+
+  let total=
+  (+r.s||0)+d;
+
+  let unit=
+  (+r.c||0)
+  ?total/(+r.c||0)
+  :0;
+
+  return `
+  <tr>
+   <td>${pd(date)}</td>
+   <td>${Y(r.s)}</td>
+   <td>${Y(d)}</td>
+   <td>${Y(total)}</td>
+   <td>${r.c||0}人</td>
+   <td>${Y(unit)}</td>
+  </tr>`;
+
+ }).join('');
+
+}
+
+
+/* =========================
+   ホーム
+========================= */
+
+function home(){
+
+ let now=new Date();
+
+ let y=now.getFullYear();
+ let m=now.getMonth();
+ let day=now.getDate();
+
+ let monthStart=
+ `${y}-${String(m+1).padStart(2,'0')}-01`;
+
+ let yesterday=
+ new Date(y,m,day-1);
+
+ let yesterdayISO=
+ iso(yesterday);
+
+ let lastY=y-1;
+
+ let lastStart=
+ `${lastY}-${String(m+1).padStart(2,'0')}-01`;
+
+ let lastEnd=
+ `${lastY}-${String(m+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+
+ let lastToday=
+ `${lastY}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+ let between=(x,a,b)=>
+ x.date>=a&&x.date<=b;
+
+
+ /* 店頭売上・客数 */
+
+ let currentSales=
+ sales.filter(x=>
+  between(x,monthStart,yesterdayISO)
+ );
+
+ let previousSales=
+ sales.filter(x=>
+  between(x,lastStart,lastEnd)
+ );
+
+ let currentS=
+ currentSales.reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
+
+ let currentC=
+ currentSales.reduce(
+  (a,x)=>a+(+x.c||0),0
+ );
+
+ let previousS=
+ previousSales.reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
+
+ let previousC=
+ previousSales.reduce(
+  (a,x)=>a+(+x.c||0),0
+ );
+
+ let previousToday=
+ sales.find(x=>x.date===lastToday);
+
+ document.getElementById('hyS').textContent=
+ Y(previousToday?.s||0);
+
+ document.getElementById('hyC').textContent=
+ (previousToday?.c||0)+'人';
+
+ document.getElementById('cumS').textContent=
+ Y(currentS);
+
+ document.getElementById('cumC').textContent=
+ currentC+'人';
+
+ document.getElementById('yoyS').textContent=
+ previousS
+ ?(currentS/previousS*100).toFixed(1)+'%'
+ :'-';
+
+ document.getElementById('yoyC').textContent=
+ previousC
+ ?(currentC/previousC*100).toFixed(1)+'%'
+ :'-';
+
+
+ document.getElementById('gapS').textContent=
+ previousS===0
+ ?'-'
+ :currentS>=previousS
+ ?'前年超え '+Y(currentS-previousS)
+ :'あと '+Y(previousS-currentS);
+
+
+ document.getElementById('gapC').textContent=
+ previousC===0
+ ?'-'
+ :currentC>=previousC
+ ?'前年超え '+(currentC-previousC)+'人'
+ :'あと '+(previousC-currentC)+'人';
+
+
+ /* デリバリー */
+
+ let currentDelivery=
+ deliverySales.filter(x=>
+  between(x,monthStart,yesterdayISO)
+ );
+
+ let previousDelivery=
+ deliverySales.filter(x=>
+  between(x,lastStart,lastEnd)
+ );
+
+ let currentD=
+ currentDelivery.reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+ let previousD=
+ previousDelivery.reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+ let previousTodayD=
+ deliverySales
+ .filter(x=>x.date===lastToday)
+ .reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+ document.getElementById('hyD').textContent=
+ Y(previousTodayD);
+
+ document.getElementById('cumD').textContent=
+ Y(currentD);
+
+ document.getElementById('yoyD').textContent=
+ previousD
+ ?(currentD/previousD*100).toFixed(1)+'%'
+ :'-';
+
+ document.getElementById('gapD').textContent=
+ previousD===0
+ ?'-'
+ :currentD>=previousD
+ ?'前年超え '+Y(currentD-previousD)
+ :'あと '+Y(previousD-currentD);
+
+
+ /* 仕入れ・原価率・粗利益 */
+
+ let currentPurchase=
+ purchases
+ .filter(x=>
+  between(x,monthStart,yesterdayISO)
+ )
+ .reduce(
+  (a,x)=>a+pinc(x),0
+ );
+
+ /*
+  売上は店頭＋デリバリーで計算
+ */
+ let totalSales=
+ currentS+currentD;
+
+ document.getElementById('purT').textContent=
+ Y(currentPurchase);
+
+ document.getElementById('rateT').textContent=
+ totalSales
+ ?(currentPurchase/totalSales*100).toFixed(1)+'%'
+ :'0.0%';
+
+ document.getElementById('profitT').textContent=
+ Y(totalSales-currentPurchase);
+
+
+ /* 行事 */
+
+ let e=
+ events
+ .filter(x=>x.date>=iso())
+ .sort((a,b)=>a.date.localeCompare(b.date))
+ .slice(0,4);
+
+ document.getElementById('homeEv').innerHTML=
+ e.map(x=>
+  `<div class="pill" style="margin-top:5px">
+   ${pd(x.date)}　${x.title}
+  </div>`
+ ).join('')
+ ||
+ '<div class="muted">予定なし</div>';
+
+}
+
+
+/* =========================
+   商品・カテゴリ
+========================= */
+
+function renderCats(){
+
+ document.getElementById('cat').innerHTML=
+ cats.map(x=>
+  `<option value="${x}">${x}</option>`
+ ).join('');
+
+ document.getElementById('stockFilter').innerHTML=
+ '<option value="">全カテゴリ</option>'+
+ cats.map(x=>
+  `<option value="${x}">${x}</option>`
+ ).join('');
+
+ document.getElementById('catList').innerHTML=
+ cats.map(x=>
+  `<div class="item">
+   <b>${x}</b>
+   <button
+   class="danger small"
+   onclick="delCat('${x}')">
+   削除
+   </button>
+  </div>`
+ ).join('');
+
+}
+
+
+function addCat(){
+
+ let x=
+ document.getElementById('newcat')
+ .value.trim();
+
+ if(!x)return;
+
+ if(cats.includes(x)){
+  alert('同じカテゴリがあります');
+  return;
+ }
+
+ cats.push(x);
+
+ S('categories',cats);
+
+ document.getElementById('newcat').value='';
+
+ renderCats();
+
+}
+
+
+function delCat(x){
+
+ if(
+  products.some(
+   p=>(p.category||'その他')===x
+  )
+ ){
+  alert('このカテゴリを使用している商品があります');
+  return;
+ }
+
+ cats=cats.filter(c=>c!==x);
+
+ S('categories',cats);
+
+ renderCats();
+
+}
+
+
+function preview(){
+
+ let buyPrice=
+ +document.getElementById('bp').value||0;
+
+ let qty=
+ +document.getElementById('bq').value||0;
+
+ let u=
+ document.getElementById('unit').value;
+
+ let base=
+ u==='kg'
+ ?qty*1000
+ :qty;
+
+ let baseUnit=
+ u==='kg'
+ ?'g'
+ :u;
+
+ let usable=
+ +document.getElementById('usable').value||0;
+
+ let cooked=
+ +document.getElementById('cooked').value||0;
+
+ let yieldRate=
+ +document.getElementById('yieldv').value||100;
+
+ /*
+  調理後重量
+  ↓
+  実際に使える量
+  ↓
+  歩留まり
+  の順に優先
+ */
+
+ let finalQty=
+ cooked||
+ usable||
+ base*(yieldRate/100);
+
+ let cost=
+ finalQty
+ ?(buyPrice*TAX)/finalQty
+ :0;
+
+ document.getElementById('uc').textContent=
+ `¥${cost.toFixed(1)} / 1${baseUnit}`;
+
+}
+
+
+[
+ 'bp',
+ 'bq',
+ 'unit',
+ 'usable',
+ 'cooked',
+ 'yieldv'
+].forEach(id=>{
+
+ document
+ .getElementById(id)
+ .addEventListener('input',preview);
+
+ document
+ .getElementById(id)
+ .addEventListener('change',preview);
+
+});
+
+
+function saveProduct(){
+
+ let name=
+ document.getElementById('pn')
+ .value.trim();
+
+ if(!name){
+  alert('商品名を入力してください');
+  return;
+ }
+
+ let buyPrice=
+ +document.getElementById('bp').value||0;
+
+ let qty=
+ +document.getElementById('bq').value||0;
+
+ let inputUnit=
+ document.getElementById('unit').value;
+
+ let base=
+ inputUnit==='kg'
+ ?qty*1000
+ :qty;
+
+ let unit2=
+ inputUnit==='kg'
+ ?'g'
+ :inputUnit;
+
+ let usable=
+ +document.getElementById('usable').value||0;
+
+ let cooked=
+ +document.getElementById('cooked').value||0;
+
+ let yieldRate=
+ +document.getElementById('yieldv').value||100;
+
+ let finalQty=
+ cooked||
+ usable||
+ base*(yieldRate/100);
+
+ let cost=
+ finalQty
+ ?(buyPrice*TAX)/finalQty
+ :0;
+
+ let editId=
+ +document.getElementById('edit').value||0;
+
+ let obj={
+
+  id:editId||Date.now(),
+
+  name:name,
+
+  buyPrice:buyPrice,
+
+  buyQty:qty,
+
+  inputUnit:inputUnit,
+
+  unit:unit2,
+
+  cost:cost,
+
+  yield:yieldRate,
+
+  usableQty:usable,
+
+  cookedQty:cooked,
+
+  packQty:
+  +document.getElementById('pack').value||0,
+
+  category:
+  document.getElementById('cat').value||'その他',
+
+  priceTaxMode:'ex'
+
+ };
+
+
+ if(editId){
+
+  products=
+  products.map(x=>
+   x.id===editId
+   ?obj
+   :x
+  );
+
+ }else{
+
+  products.push(obj);
+
+ }
+
+ S('products',products);
+
+ document.getElementById('pn').value='';
+ document.getElementById('bp').value='';
+ document.getElementById('bq').value='';
+ document.getElementById('usable').value='';
+ document.getElementById('cooked').value='';
+ document.getElementById('pack').value='';
+ document.getElementById('yieldv').value=100;
+ document.getElementById('edit').value='';
+
+ renderProducts();
+ renderStock();
+ preview();
+
+}
+
+
+function editP(id){
+
+ let p=
+ products.find(x=>x.id===id);
+
+ if(!p)return;
+
+ document.getElementById('pn').value=
+ p.name||'';
+
+ document.getElementById('bp').value=
+ p.buyPrice||0;
+
+ document.getElementById('bq').value=
+ p.buyQty||0;
+
+ document.getElementById('unit').value=
+ p.inputUnit||p.unit||'g';
+
+ document.getElementById('usable').value=
+ p.usableQty||'';
+
+ document.getElementById('cooked').value=
+ p.cookedQty||'';
+
+ document.getElementById('yieldv').value=
+ p.yield||100;
+
+ document.getElementById('pack').value=
+ p.packQty||'';
+
+ document.getElementById('cat').value=
+ p.category||'その他';
+
+ document.getElementById('edit').value=
+ p.id;
+
+ preview();
+
+ window.scrollTo({
+  top:0,
+  behavior:'smooth'
+ });
+
+}
+
+
+function delProd(id){
+
+ if(!confirm('この商品を削除しますか？')){
+  return;
+ }
+
+ products=
+ products.filter(x=>x.id!==id);
+
+ S('products',products);
+
+ renderProducts();
+ renderStock();
+
+}
+
+
+function renderProducts(){
+
+ document.getElementById('prodRows').innerHTML=
+ products.map(p=>
+
+ `<tr>
+
+ <td>${p.name}</td>
+
+ <td>${p.category||'その他'}</td>
+
+ <td>
+ ¥${(+p.cost||0).toFixed(1)}
+ /1${p.unit||''}
+ </td>
+
+ <td>
+ <button
+ class="secondary small"
+ onclick="editP(${p.id})">
+ 変更
+ </button>
+
+ <button
+ class="danger small"
+ onclick="delProd(${p.id})">
+ 削除
+ </button>
+ </td>
+
+ </tr>`
+
+ ).join('');
+
+}
+
+
+/* =========================
+   カレンダー
+========================= */
+
+let calDate=new Date();
+
+
+function moveCal(n){
+
+ calDate.setMonth(
+  calDate.getMonth()+n
+ );
+
+ renderCal();
+
+}
+
+
+function renderCal(){
+
+ let y=calDate.getFullYear();
+ let m=calDate.getMonth();
+
+ let firstDay=
+ new Date(y,m,1).getDay();
+
+ let days=
+ new Date(y,m+1,0).getDate();
+
+ document.getElementById('calTitle').textContent=
+ `${y}年${m+1}月`;
+
+ let html=
+ ['日','月','火','水','木','金','土']
+ .map(x=>
+  `<b class="muted"
+  style="text-align:center">
+  ${x}
+  </b>`
+ )
+ .join('');
+
+ for(let i=0;i<firstDay;i++){
+  html+='<span></span>';
+ }
+
+ for(let d=1;d<=days;d++){
+
+  let date=
+  `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+
+  let dow=
+  new Date(y,m,d).getDay();
+
+  let es=
+  events.filter(x=>x.date===date);
+
+  let isClosed=
+  es.some(x=>x.type==='closed');
+
+  html+=`
+
+  <div
+  class="day
+  ${dow===0?'sun':''}
+  ${dow===6?'sat':''}
+  ${date===iso()?'today':''}
+  ${isClosed?'closed':''}"
+
+  onclick="
+  document.getElementById('edate').value='${date}'
+  ">
+
+  <b>${d}</b>
+
+  ${es.map(x=>
+   `<div class="dot">
+   ${x.title}
+   </div>`
+  ).join('')}
+
+  </div>`;
+
+ }
+
+ document.getElementById('cal').innerHTML=
+ html;
+
+}
+
+
+function addEvent(){
+
+ let date=
+ document.getElementById('edate').value;
+
+ let type=
+ document.getElementById('etype').value;
+
+ let title=
+ document.getElementById('etitle')
+ .value.trim();
+
+ if(type==='closed'&&!title){
+  title='定休日';
+ }
+
+ if(!date||!title)return;
+
+ events.push({
+
+  id:Date.now(),
+
+  date:date,
+
+  title:title,
+
+  type:type
+
+ });
+
+ S('events',events);
+
+ document.getElementById('etitle').value='';
+
+ renderCal();
+ renderEventList();
+ home();
+
+}
+
+
+function deleteEvent(id){
+
+ events=
+ events.filter(x=>x.id!==id);
+
+ S('events',events);
+
+ renderCal();
+ renderEventList();
+ home();
+
+}
+
+
+function renderEventList(){
+
+ let list=
+ [...events]
+ .sort((a,b)=>
+  a.date.localeCompare(b.date)
+ );
+
+ document.getElementById('eventList').innerHTML=
+ list.map(x=>
+
+ `<div class="item">
+
+ <div>
+
+ <b>${x.title}</b>
+
+ <div class="muted">
+ ${pd(x.date)}
+ ${x.type==='closed'?'・定休日':''}
+ </div>
+
+ </div>
+
+ <button
+ class="danger small"
+ onclick="deleteEvent(${x.id})">
+ 削除
+ </button>
+
+ </div>`
+
+ ).join('')
+ ||
+ '<div class="muted">登録なし</div>';
+
+}
+
+
+/* =========================
+   棚卸し
+========================= */
+
+function renderStock(){
+
+ let filter=
+ document.getElementById('stockFilter').value;
+
+ let ps=
+ products.filter(p=>
+  !filter||
+  (p.category||'その他')===filter
+ );
+
+ document.getElementById('stockRows').innerHTML=
+ ps.map(p=>
+
+ `<div
+ class="card"
+ data-id="${p.id}">
+
+ <b>${p.name}</b>
+
+ <div class="muted">
+
+ ${p.category||'その他'}
+
+ ・
+
+ 1P =
+ ${p.packQty||'?'}${p.unit||''}
+
+ </div>
+
+
+ <div class="row">
+
+ <input
+ class="pk"
+ type="number"
+ inputmode="decimal"
+ placeholder="未開封 ○P">
+
+ <input
+ class="op"
+ type="number"
+ inputmode="decimal"
+ placeholder="開封済み ○${p.unit||''}">
+
+ </div>
+
+ <div class="muted sum">
+ ¥0
+ </div>
+
+ </div>`
+
+ ).join('')
+ ||
+ '<div class="muted">商品がありません</div>';
+
+}
+
 
 function saveStock(){
 
-let total=0;
-let items=[];
+ let total=0;
 
-stockRows.querySelectorAll('[data-id]').forEach(r=>{
+ let items=[];
 
-let p=products.find(x=>x.id==r.dataset.id);
+ document
+ .querySelectorAll('#stockRows [data-id]')
+ .forEach(r=>{
 
-let pk=+r.querySelector('.pk').value||0;
-let op=+r.querySelector('.op').value||0;
+  let p=
+  products.find(
+   x=>x.id==r.dataset.id
+  );
 
-/* 未開封P＋開封済み */
-let q=
-pk*(+p.packQty||0)+op;
+  if(!p)return;
 
-let v=q*(+p.cost||0);
+  let packs=
+  +r.querySelector('.pk').value||0;
 
-r.querySelector('.sum').textContent=
-`${q}${p.unit} / ${Y(v)}`;
+  let opened=
+  +r.querySelector('.op').value||0;
 
-total+=v;
+  let packQty=
+  +p.packQty||0;
 
-items.push({
-productId:p.id,
-category:p.category||'その他',
-qty:q,
-value:v
-});
+  let qty=
+  packs*packQty+
+  opened;
 
-});
+  let value=
+  qty*(+p.cost||0);
 
-stockTotal.textContent=Y(total);
+  r.querySelector('.sum').textContent=
+  `${qty}${p.unit||''} / ${Y(value)}`;
 
-stocks.push({
-id:Date.now(),
-date:iso(),
-total:total,
-items:items
-});
+  total+=value;
 
-S('stockHistory',stocks);
+  items.push({
 
-renderAna();
+   productId:p.id,
+
+   name:p.name,
+
+   category:
+   p.category||'その他',
+
+   qty:qty,
+
+   value:value
+
+  });
+
+ });
+
+ document.getElementById('stockTotal').textContent=
+ Y(total);
+
+ stocks.push({
+
+  id:Date.now(),
+
+  date:iso(),
+
+  total:total,
+
+  items:items
+
+ });
+
+ S('stockHistory',stocks);
+
+ renderAna();
+
 }
 
-/* 棚卸し分析 */
+
+/* =========================
+   棚卸し分析
+========================= */
 
 let anaDate=new Date();
 
+
 function moveAna(n){
-anaDate.setMonth(anaDate.getMonth()+n);
-renderAna();
+
+ anaDate.setMonth(
+  anaDate.getMonth()+n
+ );
+
+ renderAna();
+
 }
+
 
 function renderAna(){
 
-let ym=
-`${anaDate.getFullYear()}-${String(anaDate.getMonth()+1).padStart(2,'0')}`;
+ let ym=
+ anaDate.getFullYear()+
+ '-'+
+ String(anaDate.getMonth()+1)
+ .padStart(2,'0');
 
-anaTitle.textContent=
-`${anaDate.getFullYear()}年${anaDate.getMonth()+1}月`;
+ document.getElementById('anaTitle').textContent=
+ `${anaDate.getFullYear()}年${anaDate.getMonth()+1}月`;
 
-let p=purchases
-.filter(x=>x.date.startsWith(ym))
-.reduce((a,x)=>a+pinc(x),0);
 
-let s=sales
-.filter(x=>x.date.startsWith(ym))
-.reduce((a,x)=>a+(+x.s||0),0);
+ let purchaseTotal=
+ purchases
+ .filter(x=>x.date.startsWith(ym))
+ .reduce(
+  (a,x)=>a+pinc(x),0
+ );
 
-let snap=stocks
-.filter(x=>x.date.startsWith(ym))
-.sort((a,b)=>b.id-a.id)[0];
 
-anaP.textContent=Y(p);
-anaS.textContent=Y(s);
+ let storeSales=
+ sales
+ .filter(x=>x.date.startsWith(ym))
+ .reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
 
-anaR.textContent=
-(s?p/s*100:0).toFixed(1)+'%';
 
-anaSt.textContent=
-Y(snap?.total||0);
+ let deliveryTotal=
+ deliverySales
+ .filter(x=>x.date.startsWith(ym))
+ .reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
 
-let c={};
 
-(snap?.items||[]).forEach(i=>{
-c[i.category]=(c[i.category]||0)+(+i.value||0);
-});
+ let salesTotal=
+ storeSales+deliveryTotal;
 
-let tt=Object.values(c)
-.reduce((a,x)=>a+x,0);
 
-anaCats.innerHTML=
-Object.entries(c).map(([k,v])=>{
+ let snap=
+ stocks
+ .filter(x=>x.date.startsWith(ym))
+ .sort((a,b)=>b.id-a.id)[0];
 
-let pc=tt?v/tt*100:0;
 
-return `
-<div style="margin:9px 0">
+ document.getElementById('anaP').textContent=
+ Y(purchaseTotal);
 
-<div class="item">
-<b>${k}</b>
-<span>${pc.toFixed(1)}% ${Y(v)}</span>
-</div>
+ document.getElementById('anaS').textContent=
+ Y(salesTotal);
 
-<div class="bar">
-<i style="width:${pc}%"></i>
-</div>
+ document.getElementById('anaR').textContent=
+ salesTotal
+ ?(purchaseTotal/salesTotal*100).toFixed(1)+'%'
+ :'0.0%';
 
-</div>`;
-}).join('')
-||
-'<div class="muted">棚卸しデータなし</div>';
+ document.getElementById('anaSt').textContent=
+ Y(snap?.total||0);
+
+
+ let categoryTotals={};
+
+ (snap?.items||[]).forEach(i=>{
+
+  let name=
+  i.category||'その他';
+
+  categoryTotals[name]=
+  (categoryTotals[name]||0)+
+  (+i.value||0);
+
+ });
+
+
+ let total=
+ Object.values(categoryTotals)
+ .reduce((a,x)=>a+x,0);
+
+
+ document.getElementById('anaCats').innerHTML=
+
+ Object.entries(categoryTotals)
+ .sort((a,b)=>b[1]-a[1])
+ .map(([name,value])=>{
+
+  let percent=
+  total
+  ?value/total*100
+  :0;
+
+  return `
+
+  <div style="margin:10px 0">
+
+   <div class="item">
+
+    <b>${name}</b>
+
+    <span>
+    ${percent.toFixed(1)}%
+    ${Y(value)}
+    </span>
+
+   </div>
+
+   <div class="bar">
+    <i style="width:${percent}%"></i>
+   </div>
+
+  </div>`;
+
+ }).join('')
+ ||
+ '<div class="muted">棚卸しデータなし</div>';
+
 }
 
-/* 起動 */
+
+/* =========================
+   起動
+========================= */
 
 renderSvc();
+
 renderCats();
+
 renderProducts();
+
 renderSales();
+
 renderCal();
+
+renderEventList();
+
 renderStock();
+
 loadDay();
+
 home();
+
 renderAna();
+
 preview();
 
 </script>
+
 </body>
 </html>
