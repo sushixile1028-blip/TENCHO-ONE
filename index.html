@@ -1751,4 +1751,2234 @@ function renderSales(){
 
  }).join('');
 
+}/* =========================
+   ホーム
+========================= */
+
+function home(){
+
+ let now=new Date();
+
+ let y=now.getFullYear();
+ let m=now.getMonth();
+ let day=now.getDate();
+
+ let monthStart=
+ `${y}-${String(m+1).padStart(2,'0')}-01`;
+
+ let yesterday=
+ new Date(y,m,day-1);
+
+ let yesterdayISO=
+ iso(yesterday);
+
+ let lastY=y-1;
+
+ let lastStart=
+ `${lastY}-${String(m+1).padStart(2,'0')}-01`;
+
+ let lastEnd=
+ `${lastY}-${String(m+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+
+ let lastToday=
+ `${lastY}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+ let between=(x,a,b)=>
+ x.date>=a&&x.date<=b;
+
+
+ /* 店頭売上・客数 */
+
+ let currentSales=
+ sales.filter(x=>
+  between(x,monthStart,yesterdayISO)
+ );
+
+ let previousSales=
+ sales.filter(x=>
+  between(x,lastStart,lastEnd)
+ );
+
+ let currentS=
+ currentSales.reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
+
+ let currentC=
+ currentSales.reduce(
+  (a,x)=>a+(+x.c||0),0
+ );
+
+ let previousS=
+ previousSales.reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
+
+ let previousC=
+ previousSales.reduce(
+  (a,x)=>a+(+x.c||0),0
+ );
+
+ let previousToday=
+ sales.find(
+  x=>x.date===lastToday
+ );
+
+
+ $('hyS').textContent=
+ Y(previousToday?.s||0);
+
+ $('hyC').textContent=
+ (previousToday?.c||0)+'人';
+
+ $('cumS').textContent=
+ Y(currentS);
+
+ $('cumC').textContent=
+ currentC+'人';
+
+ $('yoyS').textContent=
+ previousS
+ ?(currentS/previousS*100).toFixed(1)+'%'
+ :'-';
+
+ $('yoyC').textContent=
+ previousC
+ ?(currentC/previousC*100).toFixed(1)+'%'
+ :'-';
+
+
+ $('gapS').textContent=
+ previousS===0
+ ?'-'
+ :currentS>=previousS
+ ?'前年超え '+Y(currentS-previousS)
+ :'あと '+Y(previousS-currentS);
+
+
+ $('gapC').textContent=
+ previousC===0
+ ?'-'
+ :currentC>=previousC
+ ?'前年超え '+(currentC-previousC)+'人'
+ :'あと '+(previousC-currentC)+'人';
+
+
+ /* デリバリー */
+
+ let currentDelivery=
+ deliverySales.filter(x=>
+  between(x,monthStart,yesterdayISO)
+ );
+
+ let previousDelivery=
+ deliverySales.filter(x=>
+  between(x,lastStart,lastEnd)
+ );
+
+ let currentD=
+ currentDelivery.reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+ let previousD=
+ previousDelivery.reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+ let previousTodayD=
+ deliverySales
+ .filter(x=>x.date===lastToday)
+ .reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+
+ $('hyD').textContent=
+ Y(previousTodayD);
+
+ $('cumD').textContent=
+ Y(currentD);
+
+ $('yoyD').textContent=
+ previousD
+ ?(currentD/previousD*100).toFixed(1)+'%'
+ :'-';
+
+ $('gapD').textContent=
+ previousD===0
+ ?'-'
+ :currentD>=previousD
+ ?'前年超え '+Y(currentD-previousD)
+ :'あと '+Y(previousD-currentD);
+
+
+ /* 仕入れ・原価率・粗利益 */
+
+ let currentPurchase=
+ purchases
+ .filter(x=>
+  between(x,monthStart,yesterdayISO)
+ )
+ .reduce(
+  (a,x)=>a+pinc(x),0
+ );
+
+ let totalSales=
+ currentS+currentD;
+
+
+ $('purT').textContent=
+ Y(currentPurchase);
+
+ $('rateT').textContent=
+ totalSales
+ ?(currentPurchase/totalSales*100).toFixed(1)+'%'
+ :'0.0%';
+
+ $('profitT').textContent=
+ Y(totalSales-currentPurchase);
+
+
+ /* 行事 */
+
+ let e=
+ events
+ .filter(x=>x.date>=iso())
+ .sort(
+  (a,b)=>a.date.localeCompare(b.date)
+ )
+ .slice(0,4);
+
+
+ $('homeEv').innerHTML=
+
+ e.map(x=>
+
+ `<div
+ class="pill"
+ style="margin-top:5px">
+
+ ${pd(x.date)}　${x.title}
+
+ </div>`
+
+ ).join('')
+
+ ||
+
+ '<div class="muted">予定なし</div>';
+
 }
+
+
+/* =========================
+   丼作成
+========================= */
+
+let bowlItems=[
+
+ {
+  id:Date.now(),
+  productId:'',
+  qty:''
+ }
+
+];
+
+
+function addBowlItem(){
+
+ bowlItems.push({
+
+  id:Date.now()+Math.random(),
+
+  productId:'',
+
+  qty:''
+
+ });
+
+ renderBowl();
+
+}
+
+
+function deleteBowlItem(id){
+
+ bowlItems=
+ bowlItems.filter(
+  x=>x.id!==id
+ );
+
+ if(!bowlItems.length){
+
+  bowlItems=[
+
+   {
+    id:Date.now(),
+    productId:'',
+    qty:''
+   }
+
+  ];
+
+ }
+
+ renderBowl();
+
+}
+
+
+function changeBowlProduct(id,value){
+
+ let item=
+ bowlItems.find(
+  x=>x.id===id
+ );
+
+ if(!item)return;
+
+ item.productId=value;
+
+ renderBowl();
+
+}
+
+
+function changeBowlQty(id,value){
+
+ let item=
+ bowlItems.find(
+  x=>x.id===id
+ );
+
+ if(!item)return;
+
+ item.qty=value;
+
+ calcBowl();
+
+}
+
+
+function renderBowl(){
+
+ $('bowlItems').innerHTML=
+
+ bowlItems.map(item=>{
+
+  let p=
+  products.find(
+   x=>
+   String(x.id)===
+   String(item.productId)
+  );
+
+
+  let options=
+
+  '<option value="">食材を選択</option>'
+
+  +
+
+  products.map(x=>
+
+   `<option
+   value="${x.id}"
+   ${
+    String(x.id)===
+    String(item.productId)
+    ?'selected'
+    :''
+   }>
+   ${x.name}
+   </option>`
+
+  ).join('');
+
+
+  return `
+
+  <div class="bowl-item">
+
+   <select
+   onchange="
+   changeBowlProduct(
+    ${item.id},
+    this.value
+   )
+   ">
+
+   ${options}
+
+   </select>
+
+
+   <div class="row">
+
+    <input
+    type="number"
+    inputmode="decimal"
+
+    placeholder="${
+     p
+     ?'使用量（'+(p.unit||'')+'）'
+     :'使用量'
+    }"
+
+    value="${item.qty}"
+
+    oninput="
+    changeBowlQty(
+     ${item.id},
+     this.value
+    )
+    ">
+
+
+    <button
+    class="danger"
+
+    onclick="
+    deleteBowlItem(
+     ${item.id}
+    )
+    ">
+
+    削除
+
+    </button>
+
+   </div>
+
+
+   <div class="muted">
+
+   ${
+    p
+    ?'実質単価：¥'+
+     (+p.cost||0).toFixed(1)+
+     ' / 1'+
+     (p.unit||'')
+    :'商品を選択してください'
+   }
+
+   </div>
+
+
+   <div
+   class="muted"
+   id="bic_${item.id}">
+
+   原価：¥0.0
+
+   </div>
+
+  </div>`;
+
+ }).join('');
+
+
+ calcBowl();
+
+}
+
+
+function calcBowl(){
+
+ let total=0;
+
+
+ bowlItems.forEach(item=>{
+
+  let p=
+  products.find(
+   x=>
+   String(x.id)===
+   String(item.productId)
+  );
+
+
+  let cost=
+
+  p
+
+  ?(+p.cost||0)*
+   (+item.qty||0)
+
+  :0;
+
+
+  total+=cost;
+
+
+  let el=
+  $('bic_'+item.id);
+
+
+  if(el){
+
+   el.textContent=
+   '原価：¥'+
+   cost.toFixed(1);
+
+  }
+
+ });
+
+
+ let price=
+ +$('bowlPrice').value||0;
+
+
+ let rate=
+
+ price
+ ?total/price*100
+ :0;
+
+
+ let profit=
+ price-total;
+
+
+ $('bowlCost').textContent=
+ '¥'+total.toFixed(1);
+
+
+ $('bowlSell').textContent=
+ Y(price);
+
+
+ $('bowlRate').textContent=
+ rate.toFixed(1)+'%';
+
+
+ $('bowlProfit').textContent=
+ Y(profit);
+
+}
+
+
+$('bowlPrice')
+.addEventListener(
+ 'input',
+ calcBowl
+);
+
+
+/* =========================
+   商品・カテゴリ
+========================= */
+
+function renderCats(){
+
+ $('cat').innerHTML=
+
+ cats.map(x=>
+
+  `<option value="${x}">
+  ${x}
+  </option>`
+
+ ).join('');
+
+
+ $('stockFilter').innerHTML=
+
+ '<option value="">全カテゴリ</option>'
+
+ +
+
+ cats.map(x=>
+
+  `<option value="${x}">
+  ${x}
+  </option>`
+
+ ).join('');
+
+
+ $('catList').innerHTML=
+
+ cats.map(x=>
+
+  `<div class="item">
+
+   <b>${x}</b>
+
+   <button
+   class="danger small"
+   onclick="delCat('${x}')">
+   削除
+   </button>
+
+  </div>`
+
+ ).join('');
+
+}
+
+
+function addCat(){
+
+ let x=
+ $('newcat')
+ .value
+ .trim();
+
+
+ if(!x)return;
+
+
+ if(cats.includes(x)){
+
+  alert(
+   '同じカテゴリがあります'
+  );
+
+  return;
+
+ }
+
+
+ cats.push(x);
+
+
+ S(
+  'categories',
+  cats
+ );
+
+
+ $('newcat').value='';
+
+
+ renderCats();
+
+}
+
+
+function delCat(x){
+
+ if(
+
+  products.some(
+
+   p=>
+   (p.category||'その他')===x
+
+  )
+
+ ){
+
+  alert(
+   'このカテゴリを使用している商品があります'
+  );
+
+  return;
+
+ }
+
+
+ cats=
+ cats.filter(
+  c=>c!==x
+ );
+
+
+ S(
+  'categories',
+  cats
+ );
+
+
+ renderCats();
+
+}
+
+
+function preview(){
+
+ let buyPrice=
+ +$('bp').value||0;
+
+
+ let qty=
+ +$('bq').value||0;
+
+
+ let inputUnit=
+ $('unit').value;
+
+
+ let base=
+
+ inputUnit==='kg'
+
+ ?qty*1000
+
+ :qty;
+
+
+ let baseUnit=
+
+ inputUnit==='kg'
+
+ ?'g'
+
+ :inputUnit;
+
+
+ let usable=
+ +$('usable').value||0;
+
+
+ let cooked=
+ +$('cooked').value||0;
+
+
+ let yieldRate=
+ +$('yieldv').value||100;
+
+
+ /*
+ 調理後重量
+ ↓
+ 実際に使える量
+ ↓
+ 歩留まり
+ の順で優先
+ */
+
+ let finalQty=
+
+ cooked
+
+ ||
+
+ usable
+
+ ||
+
+ base*(yieldRate/100);
+
+
+ let cost=
+
+ finalQty
+
+ ?(buyPrice*TAX)/finalQty
+
+ :0;
+
+
+ $('uc').textContent=
+
+ `¥${cost.toFixed(1)} / 1${baseUnit}`;
+
+}
+
+
+[
+ 'bp',
+ 'bq',
+ 'unit',
+ 'usable',
+ 'cooked',
+ 'yieldv'
+
+].forEach(id=>{
+
+
+ $(id)
+ .addEventListener(
+  'input',
+  preview
+ );
+
+
+ $(id)
+ .addEventListener(
+  'change',
+  preview
+ );
+
+});
+
+
+function saveProduct(){
+
+ let name=
+ $('pn')
+ .value
+ .trim();
+
+
+ if(!name){
+
+  alert(
+   '商品名を入力してください'
+  );
+
+  return;
+
+ }
+
+
+ let buyPrice=
+ +$('bp').value||0;
+
+
+ let qty=
+ +$('bq').value||0;
+
+
+ let inputUnit=
+ $('unit').value;
+
+
+ let base=
+
+ inputUnit==='kg'
+
+ ?qty*1000
+
+ :qty;
+
+
+ let unit2=
+
+ inputUnit==='kg'
+
+ ?'g'
+
+ :inputUnit;
+
+
+ let usable=
+ +$('usable').value||0;
+
+
+ let cooked=
+ +$('cooked').value||0;
+
+
+ let yieldRate=
+ +$('yieldv').value||100;
+
+
+ let finalQty=
+
+ cooked
+
+ ||
+
+ usable
+
+ ||
+
+ base*(yieldRate/100);
+
+
+ let cost=
+
+ finalQty
+
+ ?(buyPrice*TAX)/finalQty
+
+ :0;
+
+
+ let editId=
+ +$('edit').value||0;
+
+
+ let obj={
+
+  id:
+  editId||Date.now(),
+
+  name:name,
+
+  buyPrice:buyPrice,
+
+  buyQty:qty,
+
+  inputUnit:inputUnit,
+
+  unit:unit2,
+
+  cost:cost,
+
+  yield:yieldRate,
+
+  usableQty:usable,
+
+  cookedQty:cooked,
+
+  packQty:
+  +$('pack').value||0,
+
+  category:
+  $('cat').value||'その他',
+
+  priceTaxMode:'ex'
+
+ };
+
+
+ if(editId){
+
+  products=
+
+  products.map(x=>
+
+   x.id===editId
+
+   ?obj
+
+   :x
+
+  );
+
+ }else{
+
+  products.push(obj);
+
+ }
+
+
+ S(
+  'products',
+  products
+ );
+
+
+ $('pn').value='';
+
+ $('bp').value='';
+
+ $('bq').value='';
+
+ $('usable').value='';
+
+ $('cooked').value='';
+
+ $('pack').value='';
+
+ $('yieldv').value=100;
+
+ $('edit').value='';
+
+
+ renderProducts();
+
+ renderStock();
+
+ renderBowl();
+
+ preview();
+
+}
+
+
+function editP(id){
+
+ let p=
+ products.find(
+  x=>x.id===id
+ );
+
+
+ if(!p)return;
+
+
+ $('pn').value=
+ p.name||'';
+
+
+ $('bp').value=
+ p.buyPrice||0;
+
+
+ $('bq').value=
+ p.buyQty||0;
+
+
+ $('unit').value=
+ p.inputUnit||
+ p.unit||
+ 'g';
+
+
+ $('usable').value=
+ p.usableQty||'';
+
+
+ $('cooked').value=
+ p.cookedQty||'';
+
+
+ $('yieldv').value=
+ p.yield||100;
+
+
+ $('pack').value=
+ p.packQty||'';
+
+
+ $('cat').value=
+ p.category||'その他';
+
+
+ $('edit').value=
+ p.id;
+
+
+ preview();
+
+
+ window.scrollTo({
+
+  top:0,
+
+  behavior:'smooth'
+
+ });
+
+}
+
+
+function delProd(id){
+
+ if(
+  !confirm(
+   'この商品を削除しますか？'
+  )
+ ){
+  return;
+ }
+
+
+ products=
+ products.filter(
+  x=>x.id!==id
+ );
+
+
+ S(
+  'products',
+  products
+ );
+
+
+ renderProducts();
+
+ renderStock();
+
+ renderBowl();
+
+}
+
+
+function renderProducts(){
+
+ $('prodRows').innerHTML=
+
+ products.map(p=>
+
+ `<tr>
+
+ <td>
+ ${p.name}
+ </td>
+
+ <td>
+ ${p.category||'その他'}
+ </td>
+
+ <td>
+ ¥${(+p.cost||0).toFixed(1)}
+ /1${p.unit||''}
+ </td>
+
+ <td>
+
+ <button
+ class="secondary small"
+ onclick="editP(${p.id})">
+ 変更
+ </button>
+
+ <button
+ class="danger small"
+ onclick="delProd(${p.id})">
+ 削除
+ </button>
+
+ </td>
+
+ </tr>`
+
+ ).join('');
+
+}/* =========================
+   日本の祝日
+========================= */
+
+/*
+ 第n○曜日を取得
+ 例：
+ 成人の日 = 1月第2月曜日
+*/
+function nthWeekday(
+ year,
+ month,
+ weekday,
+ nth
+){
+
+ let first=
+ new Date(
+  year,
+  month-1,
+  1
+ );
+
+ return (
+  1+
+  (weekday-first.getDay()+7)%7+
+  (nth-1)*7
+ );
+
+}
+
+
+/*
+ 春分・秋分の日
+ 1980〜2099年用
+*/
+function equinoxDay(
+ year,
+ spring
+){
+
+ if(spring){
+
+  return Math.floor(
+
+   20.8431+
+
+   0.242194*
+   (year-1980)
+
+   -
+
+   Math.floor(
+    (year-1980)/4
+   )
+
+  );
+
+ }
+
+
+ return Math.floor(
+
+  23.2488+
+
+  0.242194*
+  (year-1980)
+
+  -
+
+  Math.floor(
+   (year-1980)/4
+  )
+
+ );
+
+}
+
+
+/*
+ 日本の祝日一覧を作成
+*/
+function getHolidays(year){
+
+ let h={};
+
+
+ function add(
+  month,
+  day,
+  name
+ ){
+
+  let date=
+
+  year+
+
+  '-'+
+
+  String(month)
+  .padStart(2,'0')
+
+  +'-'+
+
+  String(day)
+  .padStart(2,'0');
+
+
+  h[date]=name;
+
+ }
+
+
+ /* 元日 */
+ add(
+  1,
+  1,
+  '元日'
+ );
+
+
+ /* 成人の日 */
+ add(
+  1,
+  nthWeekday(
+   year,
+   1,
+   1,
+   2
+  ),
+  '成人の日'
+ );
+
+
+ /* 建国記念の日 */
+ add(
+  2,
+  11,
+  '建国記念の日'
+ );
+
+
+ /* 天皇誕生日 */
+ if(year>=2020){
+
+  add(
+   2,
+   23,
+   '天皇誕生日'
+  );
+
+ }
+
+
+ /* 春分の日 */
+ add(
+  3,
+  equinoxDay(
+   year,
+   true
+  ),
+  '春分の日'
+ );
+
+
+ /* 昭和の日 */
+ add(
+  4,
+  29,
+  '昭和の日'
+ );
+
+
+ /* 憲法記念日 */
+ add(
+  5,
+  3,
+  '憲法記念日'
+ );
+
+
+ /* みどりの日 */
+ add(
+  5,
+  4,
+  'みどりの日'
+ );
+
+
+ /* こどもの日 */
+ add(
+  5,
+  5,
+  'こどもの日'
+ );
+
+
+ /* 海の日 */
+ add(
+  7,
+  nthWeekday(
+   year,
+   7,
+   1,
+   3
+  ),
+  '海の日'
+ );
+
+
+ /* 山の日 */
+ if(year>=2016){
+
+  add(
+   8,
+   11,
+   '山の日'
+  );
+
+ }
+
+
+ /* 敬老の日 */
+ add(
+  9,
+  nthWeekday(
+   year,
+   9,
+   1,
+   3
+  ),
+  '敬老の日'
+ );
+
+
+ /* 秋分の日 */
+ add(
+  9,
+  equinoxDay(
+   year,
+   false
+  ),
+  '秋分の日'
+ );
+
+
+ /* スポーツの日 */
+ add(
+  10,
+  nthWeekday(
+   year,
+   10,
+   1,
+   2
+  ),
+  'スポーツの日'
+ );
+
+
+ /* 文化の日 */
+ add(
+  11,
+  3,
+  '文化の日'
+ );
+
+
+ /* 勤労感謝の日 */
+ add(
+  11,
+  23,
+  '勤労感謝の日'
+ );
+
+
+ /*
+  振替休日
+ */
+ Object.keys(h)
+ .sort()
+ .forEach(date=>{
+
+  let d=
+  new Date(
+   date+'T00:00:00'
+  );
+
+
+  if(d.getDay()===0){
+
+   let next=
+   new Date(d);
+
+
+   do{
+
+    next.setDate(
+     next.getDate()+1
+    );
+
+   }while(
+    h[iso(next)]
+   );
+
+
+   h[iso(next)]=
+   '振替休日';
+
+  }
+
+ });
+
+
+ /*
+  国民の休日
+  祝日と祝日に挟まれた平日
+ */
+ let start=
+ new Date(
+  year,
+  0,
+  2
+ );
+
+ let end=
+ new Date(
+  year,
+  11,
+  30
+ );
+
+
+ for(
+  let d=new Date(start);
+  d<=end;
+  d.setDate(d.getDate()+1)
+ ){
+
+  let date=
+  iso(d);
+
+
+  if(h[date]){
+   continue;
+  }
+
+
+  let prev=
+  new Date(d);
+
+  let next=
+  new Date(d);
+
+
+  prev.setDate(
+   prev.getDate()-1
+  );
+
+  next.setDate(
+   next.getDate()+1
+  );
+
+
+  if(
+   h[iso(prev)] &&
+   h[iso(next)]
+  ){
+
+   h[date]=
+   '国民の休日';
+
+  }
+
+ }
+
+
+ return h;
+
+}
+
+
+/* =========================
+   カレンダー
+========================= */
+
+let calDate=
+new Date();
+
+
+function moveCal(n){
+
+ calDate.setMonth(
+  calDate.getMonth()+n
+ );
+
+ renderCal();
+
+}
+
+
+function renderCal(){
+
+ let y=
+ calDate.getFullYear();
+
+ let m=
+ calDate.getMonth();
+
+
+ let firstDay=
+ new Date(
+  y,
+  m,
+  1
+ ).getDay();
+
+
+ let days=
+ new Date(
+  y,
+  m+1,
+  0
+ ).getDate();
+
+
+ let holidays=
+ getHolidays(y);
+
+
+ $('calTitle').textContent=
+
+ `${y}年${m+1}月`;
+
+
+ let html=
+
+ ['日','月','火','水','木','金','土']
+
+ .map(x=>
+
+  `<b
+  class="muted"
+  style="text-align:center">
+  ${x}
+  </b>`
+
+ )
+
+ .join('');
+
+
+ for(
+  let i=0;
+  i<firstDay;
+  i++
+ ){
+
+  html+=
+  '<span></span>';
+
+ }
+
+
+ for(
+  let d=1;
+  d<=days;
+  d++
+ ){
+
+  let date=
+
+  `${y}-${
+   String(m+1)
+   .padStart(2,'0')
+  }-${
+   String(d)
+   .padStart(2,'0')
+  }`;
+
+
+  let dow=
+  new Date(
+   y,
+   m,
+   d
+  ).getDay();
+
+
+  let es=
+  events.filter(
+   x=>x.date===date
+  );
+
+
+  let isClosed=
+  es.some(
+   x=>x.type==='closed'
+  );
+
+
+  let holidayName=
+  holidays[date]||'';
+
+
+  html+=`
+
+  <div
+
+  class="day
+
+  ${dow===0?'sun':''}
+
+  ${dow===6?'sat':''}
+
+  ${holidayName?'holiday':''}
+
+  ${date===iso()?'today':''}
+
+  ${isClosed?'closed':''}"
+
+  onclick="
+  document.getElementById('edate').value='${date}'
+  ">
+
+
+  <b>${d}</b>
+
+
+  ${
+   holidayName
+
+   ?`
+   <div class="holiday-name">
+   ${holidayName}
+   </div>
+   `
+
+   :''
+  }
+
+
+  ${
+   es.map(x=>
+
+    `<div class="dot">
+    ${x.title}
+    </div>`
+
+   ).join('')
+  }
+
+
+  </div>`;
+
+ }
+
+
+ $('cal').innerHTML=
+ html;
+
+}
+
+
+function addEvent(){
+
+ let date=
+ $('edate').value;
+
+
+ let type=
+ $('etype').value;
+
+
+ let title=
+ $('etitle')
+ .value
+ .trim();
+
+
+ if(
+  type==='closed' &&
+  !title
+ ){
+
+  title=
+  '定休日';
+
+ }
+
+
+ if(
+  !date ||
+  !title
+ ){
+  return;
+ }
+
+
+ events.push({
+
+  id:Date.now(),
+
+  date:date,
+
+  title:title,
+
+  type:type
+
+ });
+
+
+ S(
+  'events',
+  events
+ );
+
+
+ $('etitle').value='';
+
+
+ renderCal();
+
+ renderEventList();
+
+ home();
+
+}
+
+
+function deleteEvent(id){
+
+ events=
+ events.filter(
+  x=>x.id!==id
+ );
+
+
+ S(
+  'events',
+  events
+ );
+
+
+ renderCal();
+
+ renderEventList();
+
+ home();
+
+}
+
+
+function renderEventList(){
+
+ let list=
+
+ [...events]
+
+ .sort(
+  (a,b)=>
+  a.date.localeCompare(b.date)
+ );
+
+
+ $('eventList').innerHTML=
+
+ list.map(x=>
+
+ `<div class="item">
+
+ <div>
+
+ <b>
+ ${x.title}
+ </b>
+
+ <div class="muted">
+
+ ${pd(x.date)}
+
+ ${
+  x.type==='closed'
+  ?'・定休日'
+  :''
+ }
+
+ </div>
+
+ </div>
+
+
+ <button
+ class="danger small"
+ onclick="deleteEvent(${x.id})">
+ 削除
+ </button>
+
+ </div>`
+
+ ).join('')
+
+ ||
+
+ '<div class="muted">登録なし</div>';
+
+}
+
+
+/* =========================
+   棚卸し
+========================= */
+
+function renderStock(){
+
+ let filter=
+ $('stockFilter').value;
+
+
+ let ps=
+
+ products.filter(p=>
+
+  !filter
+
+  ||
+
+  (p.category||'その他')===
+  filter
+
+ );
+
+
+ $('stockRows').innerHTML=
+
+ ps.map(p=>
+
+ `<div
+ class="card"
+ data-id="${p.id}">
+
+
+ <b>
+ ${p.name}
+ </b>
+
+
+ <div class="muted">
+
+ ${p.category||'その他'}
+
+ ・
+
+ 1P =
+ ${p.packQty||'?'}
+ ${p.unit||''}
+
+ </div>
+
+
+ <div class="row">
+
+ <input
+ class="pk"
+ type="number"
+ inputmode="decimal"
+ placeholder="未開封 ○P">
+
+
+ <input
+ class="op"
+ type="number"
+ inputmode="decimal"
+ placeholder="開封済み ○${p.unit||''}">
+
+ </div>
+
+
+ <div class="muted sum">
+ ¥0
+ </div>
+
+ </div>`
+
+ ).join('')
+
+ ||
+
+ '<div class="muted">商品がありません</div>';
+
+}
+
+
+function saveStock(){
+
+ let total=0;
+
+ let items=[];
+
+
+ document
+
+ .querySelectorAll(
+  '#stockRows [data-id]'
+ )
+
+ .forEach(r=>{
+
+
+  let p=
+
+  products.find(
+   x=>x.id==r.dataset.id
+  );
+
+
+  if(!p)return;
+
+
+  let packs=
+
+  +r.querySelector('.pk')
+  .value||0;
+
+
+  let opened=
+
+  +r.querySelector('.op')
+  .value||0;
+
+
+  let packQty=
+  +p.packQty||0;
+
+
+  let qty=
+
+  packs*packQty
+
+  +
+
+  opened;
+
+
+  let value=
+
+  qty*
+
+  (+p.cost||0);
+
+
+  r.querySelector(
+   '.sum'
+  ).textContent=
+
+  `${qty}${p.unit||''} / ${Y(value)}`;
+
+
+  total+=value;
+
+
+  items.push({
+
+   productId:p.id,
+
+   name:p.name,
+
+   category:
+   p.category||'その他',
+
+   qty:qty,
+
+   value:value
+
+  });
+
+ });
+
+
+ $('stockTotal').textContent=
+ Y(total);
+
+
+ stocks.push({
+
+  id:Date.now(),
+
+  date:iso(),
+
+  total:total,
+
+  items:items
+
+ });
+
+
+ S(
+  'stockHistory',
+  stocks
+ );
+
+
+ renderAna();
+
+}
+
+
+/* =========================
+   棚卸し分析
+========================= */
+
+let anaDate=
+new Date();
+
+
+function moveAna(n){
+
+ anaDate.setMonth(
+  anaDate.getMonth()+n
+ );
+
+ renderAna();
+
+}
+
+
+function renderAna(){
+
+ let ym=
+
+ anaDate.getFullYear()
+
+ +'-'+
+
+ String(
+  anaDate.getMonth()+1
+ )
+ .padStart(2,'0');
+
+
+ $('anaTitle').textContent=
+
+ `${anaDate.getFullYear()}年${anaDate.getMonth()+1}月`;
+
+
+ let purchaseTotal=
+
+ purchases
+
+ .filter(
+  x=>x.date.startsWith(ym)
+ )
+
+ .reduce(
+  (a,x)=>a+pinc(x),
+  0
+ );
+
+
+ let storeSales=
+
+ sales
+
+ .filter(
+  x=>x.date.startsWith(ym)
+ )
+
+ .reduce(
+  (a,x)=>a+(+x.s||0),
+  0
+ );
+
+
+ let deliveryTotal=
+
+ deliverySales
+
+ .filter(
+  x=>x.date.startsWith(ym)
+ )
+
+ .reduce(
+  (a,x)=>a+(+x.gross||0),
+  0
+ );
+
+
+ let salesTotal=
+
+ storeSales+
+
+ deliveryTotal;
+
+
+ let snap=
+
+ stocks
+
+ .filter(
+  x=>x.date.startsWith(ym)
+ )
+
+ .sort(
+  (a,b)=>b.id-a.id
+ )[0];
+
+
+ $('anaP').textContent=
+ Y(purchaseTotal);
+
+
+ $('anaS').textContent=
+ Y(salesTotal);
+
+
+ $('anaR').textContent=
+
+ salesTotal
+
+ ?(
+   purchaseTotal/
+   salesTotal*
+   100
+  ).toFixed(1)+'%'
+
+ :'0.0%';
+
+
+ $('anaSt').textContent=
+ Y(snap?.total||0);
+
+
+ let categoryTotals={};
+
+
+ (snap?.items||[])
+ .forEach(i=>{
+
+  let name=
+  i.category||'その他';
+
+
+  categoryTotals[name]=
+
+  (categoryTotals[name]||0)
+
+  +
+
+  (+i.value||0);
+
+ });
+
+
+ let total=
+
+ Object
+ .values(categoryTotals)
+ .reduce(
+  (a,x)=>a+x,
+  0
+ );
+
+
+ $('anaCats').innerHTML=
+
+ Object
+ .entries(categoryTotals)
+
+ .sort(
+  (a,b)=>b[1]-a[1]
+ )
+
+ .map(
+  ([name,value])=>{
+
+
+   let percent=
+
+   total
+
+   ?value/total*100
+
+   :0;
+
+
+   return `
+
+   <div
+   style="margin:10px 0">
+
+
+   <div class="item">
+
+   <b>
+   ${name}
+   </b>
+
+   <span>
+   ${percent.toFixed(1)}%
+   ${Y(value)}
+   </span>
+
+   </div>
+
+
+   <div class="bar">
+
+   <i
+   style="width:${percent}%">
+   </i>
+
+   </div>
+
+
+   </div>`;
+
+  }
+
+ ).join('')
+
+ ||
+
+ '<div class="muted">棚卸しデータなし</div>';
+
+}
+
+
+/* =========================
+   起動
+========================= */
+
+renderSvc();
+
+renderCats();
+
+renderProducts();
+
+renderSales();
+
+renderCal();
+
+renderEventList();
+
+renderStock();
+
+loadDay();
+
+home();
+
+renderAna();
+
+preview();
+
+renderBowl();
+
+</script>
+
+</body>
+</html>
