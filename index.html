@@ -44,7 +44,7 @@ body{
 main{
  width:100%;
  max-width:980px;
- margin:auto;
+ margin:0 auto;
  padding:
  max(18px,env(safe-area-inset-top))
  10px
@@ -140,6 +140,7 @@ button{
  background:var(--accent);
  color:#071510;
  font-weight:800;
+ cursor:pointer;
 }
 
 .secondary{
@@ -154,6 +155,7 @@ button{
 
 .small{
  width:auto !important;
+ min-width:auto !important;
  padding:5px 8px !important;
  font-size:11px !important;
  border-radius:7px !important;
@@ -178,6 +180,7 @@ button{
 .tablewrap{
  width:100%;
  overflow-x:auto;
+ -webkit-overflow-scrolling:touch;
 }
 
 .table{
@@ -267,23 +270,28 @@ button{
  border-bottom:1px solid var(--line);
 }
 
+.stock-month-total{
+ font-size:24px;
+ font-weight:900;
+ margin-top:8px;
+}
+
 #nav{
  position:fixed;
  left:0;
  right:0;
  bottom:0;
  z-index:999999;
-
  display:flex;
  overflow-x:auto;
-
+ overflow-y:hidden;
  background:rgba(10,17,32,.98);
  border-top:1px solid var(--line);
-
  padding:
  6px
  7px
  calc(6px + env(safe-area-inset-bottom));
+ -webkit-overflow-scrolling:touch;
 }
 
 #nav button{
@@ -629,10 +637,8 @@ inputmode="decimal"
 placeholder="売価（税込）"
 style="margin-top:7px">
 
-<div
-class="muted"
-style="margin-top:8px">
-商品登録済みの食材を選び、使用量を入力すると自動計算します。
+<div class="muted" style="margin-top:8px">
+登録してある商品を選び、使用するg数・枚数・個数などを入力してください。
 </div>
 
 <div id="bowlItems"></div>
@@ -677,7 +683,10 @@ style="margin-top:8px">
 
 </div>
 
-</section><!-- 商品登録 -->
+</section>
+
+
+<!-- 商品登録 -->
 
 <section id="products" class="page">
 
@@ -763,10 +772,8 @@ placeholder="1Pあたりの入数">
 </div>
 
 <div class="pill">
-
 実質単価
 <b id="uc">¥0.0</b>
-
 </div>
 
 <input id="edit" type="hidden">
@@ -894,7 +901,6 @@ style="margin-top:6px">
 <div class="card">
 
 <h2>登録済み</h2>
-
 <div id="eventList"></div>
 
 </div>
@@ -912,6 +918,24 @@ style="margin-top:6px">
 
 <div class="card">
 
+<h2>棚卸しする月</h2>
+
+<input
+id="stockMonth"
+type="month"
+onchange="renderStock()">
+
+<div
+id="stockSavedInfo"
+class="muted"
+style="margin-top:7px">
+</div>
+
+</div>
+
+
+<div class="card">
+
 <select
 id="stockFilter"
 onchange="renderStock()">
@@ -922,12 +946,12 @@ onchange="renderStock()">
 <button
 onclick="saveStock()"
 style="margin-top:8px">
-棚卸しを保存・計算
+この月の棚卸しを保存
 </button>
 
 <div
 id="stockTotal"
-style="font-size:24px;font-weight:900;margin-top:8px">
+class="stock-month-total">
 ¥0
 </div>
 
@@ -964,11 +988,27 @@ onclick="moveAna(1)">
 
 <h2 id="anaTitle"></h2>
 
+
 <div class="metric">
 
 <div class="pill">
-仕入れ（税込換算）
+月初棚卸し（先月末）
+<b id="anaStartStock">¥0</b>
+</div>
+
+<div class="pill">
+当月仕入れ（税込換算）
 <b id="anaP">¥0</b>
+</div>
+
+<div class="pill">
+月末棚卸し
+<b id="anaSt">¥0</b>
+</div>
+
+<div class="pill">
+売上原価
+<b id="anaActualCost">¥0</b>
 </div>
 
 <div class="pill">
@@ -977,15 +1017,19 @@ onclick="moveAna(1)">
 </div>
 
 <div class="pill">
-原価率
-<b id="anaR">0%</b>
+実原価率
+<b id="anaR">0.0%</b>
 </div>
 
 <div class="pill">
-最新棚卸し
-<b id="anaSt">¥0</b>
+粗利益
+<b id="anaGrossProfit">¥0</b>
 </div>
 
+</div>
+
+<div class="muted" style="margin-top:8px">
+実原価率 ＝（月初棚卸し ＋ 当月仕入れ − 月末棚卸し）÷ 売上 × 100
 </div>
 
 </div>
@@ -993,7 +1037,7 @@ onclick="moveAna(1)">
 
 <div class="card">
 
-<h2>カテゴリ構成</h2>
+<h2>月末棚卸しのカテゴリ構成</h2>
 
 <div id="anaCats"></div>
 
@@ -1003,13 +1047,9 @@ onclick="moveAna(1)">
 
 </main>
 
-
 <nav id="nav"></nav>
 
-
-<script>
-
-const $=id=>document.getElementById(id);
+<script>const $=id=>document.getElementById(id);
 
 /*
  既存データを消さないため
@@ -1084,10 +1124,10 @@ let cats=L(
 let stocks=L('stockHistory',[]);
 
 
-/*
- 売上・客数のすぐ隣に
- 丼作成を追加
-*/
+/* =========================
+   下メニュー
+========================= */
+
 const pages=[
 
  ['home','ホーム'],
@@ -1128,6 +1168,7 @@ function go(id,b){
   x=>x.classList.remove('on')
  );
 
+
  $(id).classList.add('on');
 
 
@@ -1136,6 +1177,7 @@ function go(id,b){
  .forEach(
   x=>x.classList.remove('sel')
  );
+
 
  b.classList.add('sel');
 
@@ -1196,6 +1238,10 @@ function go(id,b){
 }
 
 
+/* =========================
+   日付
+========================= */
+
 function iso(d=new Date()){
 
  return (
@@ -1212,6 +1258,26 @@ function iso(d=new Date()){
 
   String(
    d.getDate()
+  ).padStart(2,'0')
+
+ );
+
+}
+
+
+function currentYM(){
+
+ let d=new Date();
+
+
+ return (
+
+  d.getFullYear()
+
+  +'-'+
+
+  String(
+   d.getMonth()+1
   ).padStart(2,'0')
 
  );
@@ -1272,6 +1338,14 @@ $('edate').value=
 iso();
 
 
+$('stockMonth').value=
+currentYM();
+
+
+/* =========================
+   売上・客数
+========================= */
+
 function loadDay(){
 
  let date=
@@ -1282,9 +1356,6 @@ function loadDay(){
  pd(date);
 
 
- /*
- 売上・客数・デリバリー・仕入れの日付を連動
- */
  $('edate').value=
  date;
 
@@ -1368,7 +1439,16 @@ function saveSales(){
 }
 
 
+/* =========================
+   仕入れ
+========================= */
+
 function pinc(x){
+
+ /*
+ 新しく入力する仕入れは税抜。
+ 過去データとの互換性も維持。
+ */
 
  if(x.taxMode==='ex'){
 
@@ -1472,11 +1552,11 @@ function renderP(){
  </span>
 
  <div class="muted">
- 原価計算：
- ${Y(pinc(x))}
+ 原価計算：${Y(pinc(x))}
  </div>
 
  </div>
+
 
  <button
  class="danger small"
@@ -1494,6 +1574,10 @@ function renderP(){
 
 }
 
+
+/* =========================
+   デリバリー
+========================= */
 
 function renderSvc(){
 
@@ -1609,6 +1693,7 @@ function renderD(){
  ${Y(x.gross)}
  </div>
 
+
  <button
  class="danger small"
  onclick="delD(${x.id})">
@@ -1626,6 +1711,10 @@ function renderD(){
 }
 
 
+/* =========================
+   売上実績
+========================= */
+
 let salesDate=
 new Date();
 
@@ -1635,6 +1724,7 @@ function moveSales(n){
  salesDate.setMonth(
   salesDate.getMonth()+n
  );
+
 
  renderSales();
 
@@ -1787,8 +1877,6 @@ function home(){
  x.date>=a&&x.date<=b;
 
 
- /* 店頭売上・客数 */
-
  let currentSales=
  sales.filter(x=>
   between(x,monthStart,yesterdayISO)
@@ -1798,6 +1886,7 @@ function home(){
  sales.filter(x=>
   between(x,lastStart,lastEnd)
  );
+
 
  let currentS=
  currentSales.reduce(
@@ -1913,7 +2002,7 @@ function home(){
  :'あと '+Y(previousD-currentD);
 
 
- /* 仕入れ・原価率・粗利益 */
+ /* 仕入れ */
 
  let currentPurchase=
  purchases
@@ -1923,6 +2012,7 @@ function home(){
  .reduce(
   (a,x)=>a+pinc(x),0
  );
+
 
  let totalSales=
  currentS+currentD;
@@ -1991,13 +2081,15 @@ function addBowlItem(){
 
  bowlItems.push({
 
-  id:Date.now()+Math.random(),
+  id:
+  Date.now()+Math.random(),
 
   productId:'',
 
   qty:''
 
  });
+
 
  renderBowl();
 
@@ -2010,6 +2102,7 @@ function deleteBowlItem(id){
  bowlItems.filter(
   x=>x.id!==id
  );
+
 
  if(!bowlItems.length){
 
@@ -2025,6 +2118,7 @@ function deleteBowlItem(id){
 
  }
 
+
  renderBowl();
 
 }
@@ -2037,9 +2131,12 @@ function changeBowlProduct(id,value){
   x=>x.id===id
  );
 
+
  if(!item)return;
 
+
  item.productId=value;
+
 
  renderBowl();
 
@@ -2053,9 +2150,12 @@ function changeBowlQty(id,value){
   x=>x.id===id
  );
 
+
  if(!item)return;
 
+
  item.qty=value;
+
 
  calcBowl();
 
@@ -2068,6 +2168,7 @@ function renderBowl(){
 
  bowlItems.map(item=>{
 
+
   let p=
   products.find(
    x=>
@@ -2078,7 +2179,7 @@ function renderBowl(){
 
   let options=
 
-  '<option value="">食材を選択</option>'
+  '<option value="">商品を選択</option>'
 
   +
 
@@ -2102,78 +2203,75 @@ function renderBowl(){
 
   <div class="bowl-item">
 
-   <select
-   onchange="
-   changeBowlProduct(
-    ${item.id},
-    this.value
-   )
-   ">
+  <select
+  onchange="
+  changeBowlProduct(
+   ${item.id},
+   this.value
+  )">
 
-   ${options}
+  ${options}
 
-   </select>
-
-
-   <div class="row">
-
-    <input
-    type="number"
-    inputmode="decimal"
-
-    placeholder="${
-     p
-     ?'使用量（'+(p.unit||'')+'）'
-     :'使用量'
-    }"
-
-    value="${item.qty}"
-
-    oninput="
-    changeBowlQty(
-     ${item.id},
-     this.value
-    )
-    ">
+  </select>
 
 
-    <button
-    class="danger"
+  <div class="row">
 
-    onclick="
-    deleteBowlItem(
-     ${item.id}
-    )
-    ">
+  <input
+  type="number"
+  inputmode="decimal"
+  step="any"
 
-    削除
+  placeholder="${
+   p
+   ?'使用量（'+(p.unit||'')+'）'
+   :'使用量'
+  }"
 
-    </button>
+  value="${item.qty}"
 
-   </div>
-
-
-   <div class="muted">
-
-   ${
-    p
-    ?'実質単価：¥'+
-     (+p.cost||0).toFixed(1)+
-     ' / 1'+
-     (p.unit||'')
-    :'商品を選択してください'
-   }
-
-   </div>
+  oninput="
+  changeBowlQty(
+   ${item.id},
+   this.value
+  )">
 
 
-   <div
-   class="muted"
-   id="bic_${item.id}">
+  <button
+  class="danger"
+  onclick="
+  deleteBowlItem(
+   ${item.id}
+  )">
 
-   原価：¥0.0
+  削除
 
-   </div>
+  </button>
+
+  </div>
+
+
+  <div class="muted">
+
+  ${
+   p
+   ?'実質単価：¥'+
+    (+p.cost||0).toFixed(1)+
+    ' / 1'+
+    (p.unit||'')
+   :'商品を選択してください'
+  }
+
+  </div>
+
+
+  <div
+  class="muted"
+  id="bic_${item.id}">
+
+  原価：¥0.0
+
+  </div>
 
   </div>`;
 
@@ -2191,6 +2289,7 @@ function calcBowl(){
 
 
  bowlItems.forEach(item=>{
+
 
   let p=
   products.find(
@@ -2235,7 +2334,9 @@ function calcBowl(){
  let rate=
 
  price
+
  ?total/price*100
+
  :0;
 
 
@@ -2246,14 +2347,11 @@ function calcBowl(){
  $('bowlCost').textContent=
  '¥'+total.toFixed(1);
 
-
  $('bowlSell').textContent=
  Y(price);
 
-
  $('bowlRate').textContent=
  rate.toFixed(1)+'%';
-
 
  $('bowlProfit').textContent=
  Y(profit);
@@ -2278,9 +2376,9 @@ function renderCats(){
 
  cats.map(x=>
 
-  `<option value="${x}">
-  ${x}
-  </option>`
+ `<option value="${x}">
+ ${x}
+ </option>`
 
  ).join('');
 
@@ -2293,9 +2391,9 @@ function renderCats(){
 
  cats.map(x=>
 
-  `<option value="${x}">
-  ${x}
-  </option>`
+ `<option value="${x}">
+ ${x}
+ </option>`
 
  ).join('');
 
@@ -2304,17 +2402,17 @@ function renderCats(){
 
  cats.map(x=>
 
-  `<div class="item">
+ `<div class="item">
 
-   <b>${x}</b>
+ <b>${x}</b>
 
-   <button
-   class="danger small"
-   onclick="delCat('${x}')">
-   削除
-   </button>
+ <button
+ class="danger small"
+ onclick="delCat('${x}')">
+ 削除
+ </button>
 
-  </div>`
+ </div>`
 
  ).join('');
 
@@ -2334,9 +2432,7 @@ function addCat(){
 
  if(cats.includes(x)){
 
-  alert(
-   '同じカテゴリがあります'
-  );
+  alert('同じカテゴリがあります');
 
   return;
 
@@ -2363,14 +2459,10 @@ function addCat(){
 function delCat(x){
 
  if(
-
   products.some(
-
    p=>
    (p.category||'その他')===x
-
   )
-
  ){
 
   alert(
@@ -2442,15 +2534,6 @@ function preview(){
  let yieldRate=
  +$('yieldv').value||100;
 
-
- /*
- 調理後重量
- ↓
- 実際に使える量
- ↓
- 歩留まり
- の順で優先
- */
 
  let finalQty=
 
@@ -2698,40 +2781,31 @@ function editP(id){
  $('pn').value=
  p.name||'';
 
-
  $('bp').value=
  p.buyPrice||0;
 
-
  $('bq').value=
  p.buyQty||0;
-
 
  $('unit').value=
  p.inputUnit||
  p.unit||
  'g';
 
-
  $('usable').value=
  p.usableQty||'';
-
 
  $('cooked').value=
  p.cookedQty||'';
 
-
  $('yieldv').value=
  p.yield||100;
-
 
  $('pack').value=
  p.packQty||'';
 
-
  $('cat').value=
  p.category||'その他';
-
 
  $('edit').value=
  p.id;
@@ -2828,24 +2902,10 @@ function renderProducts(){
    日本の祝日
 ========================= */
 
-/*
- 第n○曜日を取得
- 例：
- 成人の日 = 1月第2月曜日
-*/
-function nthWeekday(
- year,
- month,
- weekday,
- nth
-){
+function nthWeekday(year,month,weekday,nth){
 
  let first=
- new Date(
-  year,
-  month-1,
-  1
- );
+ new Date(year,month-1,1);
 
  return (
   1+
@@ -2856,80 +2916,41 @@ function nthWeekday(
 }
 
 
-/*
- 春分・秋分の日
- 1980〜2099年用
-*/
-function equinoxDay(
- year,
- spring
-){
+function equinoxDay(year,spring){
 
  if(spring){
 
   return Math.floor(
-
    20.8431+
-
-   0.242194*
-   (year-1980)
-
-   -
-
-   Math.floor(
-    (year-1980)/4
-   )
-
+   0.242194*(year-1980)-
+   Math.floor((year-1980)/4)
   );
 
  }
 
-
  return Math.floor(
-
   23.2488+
-
-  0.242194*
-  (year-1980)
-
-  -
-
-  Math.floor(
-   (year-1980)/4
-  )
-
+  0.242194*(year-1980)-
+  Math.floor((year-1980)/4)
  );
 
 }
 
 
-/*
- 日本の祝日一覧を作成
-*/
 function getHolidays(year){
 
  let h={};
 
 
- function add(
-  month,
-  day,
-  name
- ){
+ function add(month,day,name){
 
   let date=
 
   year+
-
   '-'+
-
-  String(month)
-  .padStart(2,'0')
-
-  +'-'+
-
-  String(day)
-  .padStart(2,'0');
+  String(month).padStart(2,'0')+
+  '-'+
+  String(day).padStart(2,'0');
 
 
   h[date]=name;
@@ -2937,179 +2958,84 @@ function getHolidays(year){
  }
 
 
- /* 元日 */
+ add(1,1,'元日');
+
  add(
   1,
-  1,
-  '元日'
- );
-
-
- /* 成人の日 */
- add(
-  1,
-  nthWeekday(
-   year,
-   1,
-   1,
-   2
-  ),
+  nthWeekday(year,1,1,2),
   '成人の日'
  );
 
-
- /* 建国記念の日 */
- add(
-  2,
-  11,
-  '建国記念の日'
- );
+ add(2,11,'建国記念の日');
 
 
- /* 天皇誕生日 */
  if(year>=2020){
-
-  add(
-   2,
-   23,
-   '天皇誕生日'
-  );
-
+  add(2,23,'天皇誕生日');
  }
 
 
- /* 春分の日 */
  add(
   3,
-  equinoxDay(
-   year,
-   true
-  ),
+  equinoxDay(year,true),
   '春分の日'
  );
 
+ add(4,29,'昭和の日');
 
- /* 昭和の日 */
- add(
-  4,
-  29,
-  '昭和の日'
- );
+ add(5,3,'憲法記念日');
 
+ add(5,4,'みどりの日');
 
- /* 憲法記念日 */
- add(
-  5,
-  3,
-  '憲法記念日'
- );
+ add(5,5,'こどもの日');
 
 
- /* みどりの日 */
- add(
-  5,
-  4,
-  'みどりの日'
- );
-
-
- /* こどもの日 */
- add(
-  5,
-  5,
-  'こどもの日'
- );
-
-
- /* 海の日 */
  add(
   7,
-  nthWeekday(
-   year,
-   7,
-   1,
-   3
-  ),
+  nthWeekday(year,7,1,3),
   '海の日'
  );
 
 
- /* 山の日 */
  if(year>=2016){
-
-  add(
-   8,
-   11,
-   '山の日'
-  );
-
+  add(8,11,'山の日');
  }
 
 
- /* 敬老の日 */
  add(
   9,
-  nthWeekday(
-   year,
-   9,
-   1,
-   3
-  ),
+  nthWeekday(year,9,1,3),
   '敬老の日'
  );
 
 
- /* 秋分の日 */
  add(
   9,
-  equinoxDay(
-   year,
-   false
-  ),
+  equinoxDay(year,false),
   '秋分の日'
  );
 
 
- /* スポーツの日 */
  add(
   10,
-  nthWeekday(
-   year,
-   10,
-   1,
-   2
-  ),
+  nthWeekday(year,10,1,2),
   'スポーツの日'
  );
 
 
- /* 文化の日 */
- add(
-  11,
-  3,
-  '文化の日'
- );
+ add(11,3,'文化の日');
 
-
- /* 勤労感謝の日 */
- add(
-  11,
-  23,
-  '勤労感謝の日'
- );
+ add(11,23,'勤労感謝の日');
 
 
  /*
-  振替休日
+ 振替休日
  */
  Object.keys(h)
  .sort()
  .forEach(date=>{
 
   let d=
-  new Date(
-   date+'T00:00:00'
-  );
+  new Date(date+'T00:00:00');
 
 
   if(d.getDay()===0){
@@ -3124,13 +3050,10 @@ function getHolidays(year){
      next.getDate()+1
     );
 
-   }while(
-    h[iso(next)]
-   );
+   }while(h[iso(next)]);
 
 
-   h[iso(next)]=
-   '振替休日';
+   h[iso(next)]='振替休日';
 
   }
 
@@ -3138,22 +3061,13 @@ function getHolidays(year){
 
 
  /*
-  国民の休日
-  祝日と祝日に挟まれた平日
+ 国民の休日
  */
  let start=
- new Date(
-  year,
-  0,
-  2
- );
+ new Date(year,0,2);
 
  let end=
- new Date(
-  year,
-  11,
-  30
- );
+ new Date(year,11,30);
 
 
  for(
@@ -3192,8 +3106,7 @@ function getHolidays(year){
    h[iso(next)]
   ){
 
-   h[date]=
-   '国民の休日';
+   h[date]='国民の休日';
 
   }
 
@@ -3234,19 +3147,11 @@ function renderCal(){
 
 
  let firstDay=
- new Date(
-  y,
-  m,
-  1
- ).getDay();
+ new Date(y,m,1).getDay();
 
 
  let days=
- new Date(
-  y,
-  m+1,
-  0
- ).getDate();
+ new Date(y,m+1,0).getDate();
 
 
  let holidays=
@@ -3264,15 +3169,13 @@ function renderCal(){
 
  .map(x=>
 
-  `<b
-  class="muted"
-  style="text-align:center">
-  ${x}
-  </b>`
+ `<b
+ class="muted"
+ style="text-align:center">
+ ${x}
+ </b>`
 
- )
-
- .join('');
+ ).join('');
 
 
  for(
@@ -3281,8 +3184,7 @@ function renderCal(){
   i++
  ){
 
-  html+=
-  '<span></span>';
+  html+='<span></span>';
 
  }
 
@@ -3296,20 +3198,14 @@ function renderCal(){
   let date=
 
   `${y}-${
-   String(m+1)
-   .padStart(2,'0')
+   String(m+1).padStart(2,'0')
   }-${
-   String(d)
-   .padStart(2,'0')
+   String(d).padStart(2,'0')
   }`;
 
 
   let dow=
-  new Date(
-   y,
-   m,
-   d
-  ).getDay();
+  new Date(y,m,d).getDay();
 
 
   let es=
@@ -3331,36 +3227,27 @@ function renderCal(){
   html+=`
 
   <div
-
   class="day
-
   ${dow===0?'sun':''}
-
   ${dow===6?'sat':''}
-
   ${holidayName?'holiday':''}
-
   ${date===iso()?'today':''}
-
   ${isClosed?'closed':''}"
 
   onclick="
   document.getElementById('edate').value='${date}'
   ">
 
-
   <b>${d}</b>
 
 
   ${
    holidayName
-
    ?`
    <div class="holiday-name">
    ${holidayName}
    </div>
    `
-
    :''
   }
 
@@ -3368,13 +3255,12 @@ function renderCal(){
   ${
    es.map(x=>
 
-    `<div class="dot">
-    ${x.title}
-    </div>`
+   `<div class="dot">
+   ${x.title}
+   </div>`
 
    ).join('')
   }
-
 
   </div>`;
 
@@ -3408,16 +3294,12 @@ function addEvent(){
   !title
  ){
 
-  title=
-  '定休日';
+  title='定休日';
 
  }
 
 
- if(
-  !date ||
-  !title
- ){
+ if(!date||!title){
   return;
  }
 
@@ -3435,10 +3317,7 @@ function addEvent(){
  });
 
 
- S(
-  'events',
-  events
- );
+ S('events',events);
 
 
  $('etitle').value='';
@@ -3461,10 +3340,7 @@ function deleteEvent(id){
  );
 
 
- S(
-  'events',
-  events
- );
+ S('events',events);
 
 
  renderCal();
@@ -3496,9 +3372,7 @@ function renderEventList(){
 
  <div>
 
- <b>
- ${x.title}
- </b>
+ <b>${x.title}</b>
 
  <div class="muted">
 
@@ -3533,13 +3407,72 @@ function renderEventList(){
 
 
 /* =========================
-   棚卸し
+   月ごとの棚卸し
 ========================= */
 
+/*
+ 保存済みの棚卸しを取得
+
+ 新しいデータ：
+ month = 2026-07
+
+ 古いデータ：
+ date = 2026-07-27
+
+ 両方読めるようにする
+*/
+function getStockSnapshot(ym){
+
+ return stocks
+
+ .filter(x=>{
+
+  if(x.month){
+
+   return x.month===ym;
+
+  }
+
+
+  return (
+   x.date &&
+   x.date.startsWith(ym)
+  );
+
+ })
+
+ .sort(
+  (a,b)=>
+  (+b.id||0)-(+a.id||0)
+ )[0];
+
+}
+
+
+/*
+ 棚卸し画面
+*/
 function renderStock(){
+
+ let month=
+
+ $('stockMonth').value
+
+ ||
+
+ currentYM();
+
 
  let filter=
  $('stockFilter').value;
+
+
+ let snap=
+ getStockSnapshot(month);
+
+
+ let savedItems=
+ snap?.items||[];
 
 
  let ps=
@@ -3558,84 +3491,150 @@ function renderStock(){
 
  $('stockRows').innerHTML=
 
- ps.map(p=>
-
- `<div
- class="card"
- data-id="${p.id}">
+ ps.map(p=>{
 
 
- <b>
- ${p.name}
- </b>
+  let old=
+  savedItems.find(
+   x=>
+   String(x.productId)===
+   String(p.id)
+  );
 
 
- <div class="muted">
-
- ${p.category||'その他'}
-
- ・
-
- 1P =
- ${p.packQty||'?'}
- ${p.unit||''}
-
- </div>
+  /*
+   新しい棚卸しデータなら
+   P数と開封済み数量をそのまま復元
+  */
+  let packs=
+  old?.packs ?? 0;
 
 
- <div class="row">
+  let opened=
 
- <input
- class="pk"
- type="number"
- inputmode="decimal"
- placeholder="未開封 ○P">
+  old?.opened
 
+  ??
 
- <input
- class="op"
- type="number"
- inputmode="decimal"
- placeholder="開封済み ○${p.unit||''}">
-
- </div>
+  (
+   old?.packs===undefined
+   ?old?.qty||0
+   :0
+  );
 
 
- <div class="muted sum">
- ¥0
- </div>
+  return `
 
- </div>`
+  <div
+  class="card"
+  data-id="${p.id}">
 
- ).join('')
+  <b>${p.name}</b>
+
+
+  <div class="muted">
+
+  ${p.category||'その他'}
+
+  ・実質単価
+
+  ¥${(+p.cost||0).toFixed(1)}
+  /1${p.unit||''}
+
+  </div>
+
+
+  <div
+  class="muted"
+  style="margin-top:4px">
+
+  ${
+   p.packQty
+   ?'1P = '+p.packQty+(p.unit||'')
+   :'1Pあたりの数量 未設定'
+  }
+
+  </div>
+
+
+  <div class="row">
+
+  <input
+  class="pk"
+  type="number"
+  inputmode="decimal"
+  step="any"
+  value="${packs||''}"
+  placeholder="未開封 ○P"
+  oninput="calcStockPreview()">
+
+
+  <input
+  class="op"
+  type="number"
+  inputmode="decimal"
+  step="any"
+  value="${opened||''}"
+  placeholder="開封済み ○${p.unit||''}"
+  oninput="calcStockPreview()">
+
+  </div>
+
+
+  <div class="muted sum">
+  ¥0
+  </div>
+
+  </div>`;
+
+ }).join('')
 
  ||
 
  '<div class="muted">商品がありません</div>';
 
+
+ if(snap){
+
+  $('stockSavedInfo').textContent=
+
+  `${month.replace('-','年')}月の棚卸し保存済み`;
+
+ }else{
+
+  $('stockSavedInfo').textContent=
+
+  `${month.replace('-','年')}月はまだ保存されていません`;
+
+ }
+
+
+ calcStockPreview();
+
 }
 
 
-function saveStock(){
+/*
+ 入力した瞬間に
+ 数量と金額を計算
+*/
+function calcStockPreview(){
 
  let total=0;
 
- let items=[];
-
 
  document
-
  .querySelectorAll(
   '#stockRows [data-id]'
  )
-
  .forEach(r=>{
 
 
   let p=
-
   products.find(
-   x=>x.id==r.dataset.id
+   x=>
+   String(x.id)===
+   String(r.dataset.id)
   );
 
 
@@ -3643,15 +3642,11 @@ function saveStock(){
 
 
   let packs=
-
-  +r.querySelector('.pk')
-  .value||0;
+  +r.querySelector('.pk').value||0;
 
 
   let opened=
-
-  +r.querySelector('.op')
-  .value||0;
+  +r.querySelector('.op').value||0;
 
 
   let packQty=
@@ -3674,11 +3669,96 @@ function saveStock(){
   (+p.cost||0);
 
 
-  r.querySelector(
-   '.sum'
-  ).textContent=
+  let sum=
+  r.querySelector('.sum');
 
-  `${qty}${p.unit||''} / ${Y(value)}`;
+
+  if(sum){
+
+   sum.textContent=
+
+   `在庫 ${qty}${p.unit||''} ／ ${Y(value)}`;
+
+  }
+
+
+  total+=value;
+
+ });
+
+
+ $('stockTotal').textContent=
+ Y(total);
+
+}
+
+
+/*
+ 棚卸し保存
+
+ 同じ月を保存した場合は
+ 新しい内容に更新
+*/
+function saveStock(){
+
+ let month=
+
+ $('stockMonth').value
+
+ ||
+
+ currentYM();
+
+
+ let total=0;
+
+ let items=[];
+
+
+ document
+ .querySelectorAll(
+  '#stockRows [data-id]'
+ )
+ .forEach(r=>{
+
+
+  let p=
+  products.find(
+   x=>
+   String(x.id)===
+   String(r.dataset.id)
+  );
+
+
+  if(!p)return;
+
+
+  let packs=
+  +r.querySelector('.pk').value||0;
+
+
+  let opened=
+  +r.querySelector('.op').value||0;
+
+
+  let packQty=
+  +p.packQty||0;
+
+
+  let qty=
+
+  packs*packQty
+
+  +
+
+  opened;
+
+
+  let value=
+
+  qty*
+
+  (+p.cost||0);
 
 
   total+=value;
@@ -3693,7 +3773,19 @@ function saveStock(){
    category:
    p.category||'その他',
 
+   unit:
+   p.unit||'',
+
+   packs:packs,
+
+   opened:opened,
+
+   packQty:packQty,
+
    qty:qty,
+
+   unitCost:
+   +p.cost||0,
 
    value:value
 
@@ -3702,15 +3794,26 @@ function saveStock(){
  });
 
 
- $('stockTotal').textContent=
- Y(total);
+ /*
+ 同じ月の新形式データを削除
+ */
+ stocks=
+
+ stocks.filter(x=>
+  x.month!==month
+ );
 
 
+ /*
+ 月ごとの棚卸しを保存
+ */
  stocks.push({
 
   id:Date.now(),
 
-  date:iso(),
+  month:month,
+
+  date:month+'-01',
 
   total:total,
 
@@ -3723,6 +3826,15 @@ function saveStock(){
   'stockHistory',
   stocks
  );
+
+
+ $('stockTotal').textContent=
+ Y(total);
+
+
+ $('stockSavedInfo').textContent=
+
+ `${month.replace('-','年')}月の棚卸しを保存しました`;
 
 
  renderAna();
@@ -3749,6 +3861,38 @@ function moveAna(n){
 }
 
 
+/*
+ 先月を取得
+*/
+function previousYM(ym){
+
+ let parts=
+ ym.split('-');
+
+
+ let d=
+ new Date(
+  +parts[0],
+  +parts[1]-2,
+  1
+ );
+
+
+ return (
+
+  d.getFullYear()
+
+  +'-'+
+
+  String(
+   d.getMonth()+1
+  ).padStart(2,'0')
+
+ );
+
+}
+
+
 function renderAna(){
 
  let ym=
@@ -3759,8 +3903,7 @@ function renderAna(){
 
  String(
   anaDate.getMonth()+1
- )
- .padStart(2,'0');
+ ).padStart(2,'0');
 
 
  $('anaTitle').textContent=
@@ -3768,6 +3911,9 @@ function renderAna(){
  `${anaDate.getFullYear()}年${anaDate.getMonth()+1}月`;
 
 
+ /*
+ 当月仕入れ
+ */
  let purchaseTotal=
 
  purchases
@@ -3782,6 +3928,9 @@ function renderAna(){
  );
 
 
+ /*
+ 店頭売上
+ */
  let storeSales=
 
  sales
@@ -3796,6 +3945,9 @@ function renderAna(){
  );
 
 
+ /*
+ デリバリー売上
+ */
  let deliveryTotal=
 
  deliverySales
@@ -3810,6 +3962,9 @@ function renderAna(){
  );
 
 
+ /*
+ 店頭＋デリバリー
+ */
  let salesTotal=
 
  storeSales+
@@ -3817,21 +3972,98 @@ function renderAna(){
  deliveryTotal;
 
 
- let snap=
+ /*
+ 今月の月末棚卸し
+ */
+ let endStock=
+ getStockSnapshot(ym);
 
- stocks
 
- .filter(
-  x=>x.date.startsWith(ym)
- )
+ let endStockTotal=
+ +endStock?.total||0;
 
- .sort(
-  (a,b)=>b.id-a.id
- )[0];
+
+ /*
+ 先月の棚卸し
+ ＝今月の月初棚卸し
+ */
+ let prevMonth=
+ previousYM(ym);
+
+
+ let startStock=
+ getStockSnapshot(prevMonth);
+
+
+ let startStockTotal=
+ +startStock?.total||0;
+
+
+ /*
+ 売上原価
+
+ 月初棚卸し
+ ＋
+ 当月仕入れ
+ −
+ 月末棚卸し
+ */
+ let actualCost=
+
+ startStockTotal
+
+ +
+
+ purchaseTotal
+
+ -
+
+ endStockTotal;
+
+
+ /*
+ 実原価率
+
+ 売上原価
+ ÷
+ 売上
+ ×100
+ */
+ let actualRate=
+
+ salesTotal
+
+ ?actualCost/
+  salesTotal*
+  100
+
+ :0;
+
+
+ /*
+ 粗利益
+ */
+ let grossProfit=
+
+ salesTotal-
+
+ actualCost;
+
+
+ $('anaStartStock').textContent=
+ Y(startStockTotal);
 
 
  $('anaP').textContent=
  Y(purchaseTotal);
+
+
+ $('anaSt').textContent=
+ Y(endStockTotal);
+
+
+ $('anaActualCost').textContent=
+ Y(actualCost);
 
 
  $('anaS').textContent=
@@ -3839,27 +4071,22 @@ function renderAna(){
 
 
  $('anaR').textContent=
-
- salesTotal
-
- ?(
-   purchaseTotal/
-   salesTotal*
-   100
-  ).toFixed(1)+'%'
-
- :'0.0%';
+ actualRate.toFixed(1)+'%';
 
 
- $('anaSt').textContent=
- Y(snap?.total||0);
+ $('anaGrossProfit').textContent=
+ Y(grossProfit);
 
 
+ /*
+ 月末棚卸しのカテゴリ構成
+ */
  let categoryTotals={};
 
 
- (snap?.items||[])
+ (endStock?.items||[])
  .forEach(i=>{
+
 
   let name=
   i.category||'その他';
@@ -3895,53 +4122,45 @@ function renderAna(){
   (a,b)=>b[1]-a[1]
  )
 
- .map(
-  ([name,value])=>{
+ .map(([name,value])=>{
 
 
-   let percent=
+  let percent=
 
-   total
+  total
 
-   ?value/total*100
+  ?value/total*100
 
-   :0;
-
-
-   return `
-
-   <div
-   style="margin:10px 0">
+  :0;
 
 
-   <div class="item">
+  return `
 
-   <b>
-   ${name}
-   </b>
+  <div style="margin:10px 0">
 
-   <span>
-   ${percent.toFixed(1)}%
-   ${Y(value)}
-   </span>
+  <div class="item">
 
-   </div>
+  <b>${name}</b>
 
+  <span>
+  ${percent.toFixed(1)}%
+  ${Y(value)}
+  </span>
 
-   <div class="bar">
-
-   <i
-   style="width:${percent}%">
-   </i>
-
-   </div>
+  </div>
 
 
-   </div>`;
+  <div class="bar">
 
-  }
+  <i
+  style="width:${percent}%">
+  </i>
 
- ).join('')
+  </div>
+
+  </div>`;
+
+ }).join('')
 
  ||
 
@@ -3966,9 +4185,9 @@ renderCal();
 
 renderEventList();
 
-renderStock();
-
 loadDay();
+
+renderStock();
 
 home();
 
