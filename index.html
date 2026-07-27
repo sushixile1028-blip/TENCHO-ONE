@@ -22,33 +22,49 @@ content="width=device-width,initial-scale=1,viewport-fit=cover">
  --muted:#93a2bb;
  --accent:#63d6b5;
  --danger:#ff6b78;
+
+ /* 下バーの高さ */
+ --nav-h:72px;
 }
 
 *{
  box-sizing:border-box;
 }
 
-html,
-body{
- background:var(--bg);
+html{
+ margin:0;
+ padding:0;
  min-height:100%;
+ background:var(--bg);
+ overscroll-behavior-y:none;
 }
 
 body{
  margin:0;
+ padding:0;
+ min-height:100%;
+ background:var(--bg);
  color:var(--text);
  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
  overflow-x:hidden;
+ overscroll-behavior-y:none;
 }
 
 main{
  width:100%;
  max-width:980px;
  margin:0 auto;
- padding:
- max(18px,env(safe-area-inset-top))
- 10px
- calc(105px + env(safe-area-inset-bottom));
+
+ padding-top:max(18px,env(safe-area-inset-top));
+ padding-left:10px;
+ padding-right:10px;
+
+ /* 下バーに画面を隠されないための余白 */
+ padding-bottom:calc(
+  var(--nav-h) +
+  35px +
+  env(safe-area-inset-bottom)
+ );
 }
 
 .page{
@@ -119,6 +135,7 @@ h2{
  display:block;
  font-size:15px;
  margin-top:2px;
+ word-break:break-word;
 }
 
 input,
@@ -126,6 +143,7 @@ select,
 button,
 textarea{
  width:100%;
+ max-width:100%;
  min-width:0;
  border:1px solid var(--line);
  border-radius:10px;
@@ -270,38 +288,100 @@ button{
  border-bottom:1px solid var(--line);
 }
 
+.recipe-card{
+ background:#0e1628;
+ border:1px solid var(--line);
+ border-radius:12px;
+ padding:10px;
+ margin-bottom:8px;
+}
+
+.recipe-name{
+ font-size:16px;
+ font-weight:900;
+ margin-bottom:6px;
+}
+
+.recipe-food{
+ padding:5px 0;
+ border-bottom:1px solid var(--line);
+ font-size:13px;
+}
+
 .stock-month-total{
  font-size:24px;
  font-weight:900;
  margin-top:8px;
 }
 
+
+/* =========================
+   下部メニュー
+
+   iPhoneで上下スクロールしても
+   ページ内容とは別レイヤーで固定
+========================= */
+
 #nav{
- position:fixed;
- left:0;
- right:0;
- bottom:0;
- z-index:999999;
+ position:fixed !important;
+
+ left:0 !important;
+ right:0 !important;
+ bottom:0 !important;
+ top:auto !important;
+
+ width:100% !important;
+ height:auto !important;
+
+ z-index:2147483647 !important;
+
  display:flex;
+
  overflow-x:auto;
  overflow-y:hidden;
- background:rgba(10,17,32,.98);
+
+ margin:0 !important;
+
+ background:#0a1120;
+
  border-top:1px solid var(--line);
+
  padding:
  6px
  7px
  calc(6px + env(safe-area-inset-bottom));
+
+ transform:translate3d(0,0,0) !important;
+ -webkit-transform:translate3d(0,0,0) !important;
+
+ will-change:transform;
+
+ -webkit-backface-visibility:hidden;
+ backface-visibility:hidden;
+
  -webkit-overflow-scrolling:touch;
+
+ overscroll-behavior-x:contain;
+ overscroll-behavior-y:none;
+
+ touch-action:pan-x;
 }
 
 #nav button{
  flex:0 0 88px;
  width:88px;
+
  background:transparent;
+
  color:var(--muted);
+
  font-size:10px;
+
  padding:8px 3px;
+
  border-radius:9px;
+
+ white-space:nowrap;
 }
 
 #nav button.sel{
@@ -309,15 +389,25 @@ button{
  color:var(--accent);
 }
 
+
 @media(max-width:600px){
 
  main{
   padding-top:max(16px,env(safe-area-inset-top));
-  padding-bottom:calc(100px + env(safe-area-inset-bottom));
+
+  padding-bottom:calc(
+   var(--nav-h) +
+   30px +
+   env(safe-area-inset-bottom)
+  );
  }
 
  .brand{
   font-size:19px;
+ }
+
+ .card{
+  padding:10px;
  }
 
 }
@@ -325,20 +415,30 @@ button{
 </style>
 </head>
 
+
 <body>
 
 <main>
 
 
-<!-- ホーム -->
+<!-- =========================
+     ホーム
+========================= -->
 
 <section id="home" class="page on">
 
 <div class="top">
 
 <div>
-<div class="brand">TENCHO ONE</div>
-<div class="muted">あなたのお店に、もう1人の店長を。</div>
+
+<div class="brand">
+TENCHO ONE
+</div>
+
+<div class="muted">
+あなたのお店に、もう1人の店長を。
+</div>
+
 </div>
 
 <div id="today" class="muted"></div>
@@ -347,6 +447,7 @@ button{
 
 
 <div class="grid">
+
 
 <div class="card">
 
@@ -375,6 +476,7 @@ button{
 </div>
 
 </div>
+
 </div>
 
 
@@ -405,6 +507,7 @@ button{
 </div>
 
 </div>
+
 </div>
 
 
@@ -435,6 +538,7 @@ button{
 </div>
 
 </div>
+
 </div>
 
 
@@ -460,6 +564,7 @@ button{
 </div>
 
 </div>
+
 </div>
 
 
@@ -468,32 +573,48 @@ button{
 <h2>直近の行事・支払い</h2>
 
 <div id="homeEv">
-<div class="muted">予定なし</div>
+
+<div class="muted">
+予定なし
 </div>
 
 </div>
 
 </div>
+
+
+</div>
+
 </section>
 
 
-<!-- 売上・客数 -->
+<!-- =========================
+     売上・客数
+========================= -->
 
 <section id="sales" class="page">
 
 <div class="top">
-<div class="brand">売上・客数</div>
+
+<div class="brand">
+売上・客数
 </div>
+
+</div>
+
 
 <div class="card">
 
-<input id="sdate" type="date">
+<input
+id="sdate"
+type="date">
 
 <div
 id="pretty"
 class="muted"
 style="margin-top:5px">
 </div>
+
 
 <div class="row">
 
@@ -510,6 +631,7 @@ inputmode="numeric"
 placeholder="客数">
 
 </div>
+
 
 <button onclick="saveSales()">
 売上・客数を保存
@@ -596,6 +718,7 @@ onclick="moveSales(1)">
 <table class="table">
 
 <thead>
+
 <tr>
 <th>日付</th>
 <th>店頭売上</th>
@@ -604,6 +727,7 @@ onclick="moveSales(1)">
 <th>客数</th>
 <th>客単価</th>
 </tr>
+
 </thead>
 
 <tbody id="salesRows"></tbody>
@@ -611,24 +735,33 @@ onclick="moveSales(1)">
 </table>
 
 </div>
+
 </div>
 
 </section>
 
 
-<!-- 丼作成 -->
+<!-- =========================
+     丼作成
+========================= -->
 
 <section id="bowl" class="page">
 
 <div class="top">
-<div class="brand">丼作成</div>
+
+<div class="brand">
+丼作成
 </div>
+
+</div>
+
 
 <div class="card">
 
 <input
 id="bowlName"
 placeholder="丼の商品名">
+
 
 <input
 id="bowlPrice"
@@ -637,17 +770,27 @@ inputmode="decimal"
 placeholder="売価（税込）"
 style="margin-top:7px">
 
-<div class="muted" style="margin-top:8px">
-登録してある商品を選び、使用するg数・枚数・個数などを入力してください。
+
+<div
+class="muted"
+style="margin-top:8px">
+
+商品登録してある食材から選んで、
+使用するg・枚・個などを入力してください。
+
 </div>
 
+
 <div id="bowlItems"></div>
+
 
 <button
 class="secondary"
 onclick="addBowlItem()"
 style="margin-top:8px">
+
 ＋ 食材を追加
+
 </button>
 
 </div>
@@ -659,46 +802,88 @@ style="margin-top:8px">
 
 <div class="metric">
 
+
 <div class="pill">
+
 合計原価
-<b id="bowlCost">¥0.0</b>
+
+<b id="bowlCost">
+¥0.0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 売価（税込）
-<b id="bowlSell">¥0</b>
+
+<b id="bowlSell">
+¥0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 原価率
-<b id="bowlRate">0.0%</b>
+
+<b id="bowlRate">
+0.0%
+</b>
+
 </div>
+
 
 <div class="pill">
+
 粗利益
-<b id="bowlProfit">¥0</b>
-</div>
+
+<b id="bowlProfit">
+¥0
+</b>
 
 </div>
+
+
+</div>
+
+
+<button
+onclick="saveRecipe()"
+style="margin-top:10px">
+
+この丼をレシピに保存
+
+</button>
 
 </div>
 
 </section>
 
 
-<!-- 商品登録 -->
+<!-- =========================
+     商品登録
+========================= -->
 
 <section id="products" class="page">
 
 <div class="top">
-<div class="brand">商品登録</div>
+
+<div class="brand">
+商品登録
 </div>
+
+</div>
+
 
 <div class="card">
 
 <input
 id="pn"
 placeholder="商品名">
+
 
 <div class="row">
 
@@ -715,6 +900,7 @@ inputmode="decimal"
 placeholder="仕入数量">
 
 </div>
+
 
 <div class="row">
 
@@ -734,6 +920,7 @@ placeholder="仕入数量">
 
 </div>
 
+
 <div class="row">
 
 <input
@@ -750,9 +937,14 @@ placeholder="調理後重量・数量">
 
 </div>
 
+
 <div class="muted">
-米などは「調理後重量」に炊き上がり後のg数を入力できます。
+
+米などは「調理後重量」に
+炊き上がり後のg数を入力できます。
+
 </div>
+
 
 <div class="row">
 
@@ -771,17 +963,29 @@ placeholder="1Pあたりの入数">
 
 </div>
 
+
 <div class="pill">
+
 実質単価
-<b id="uc">¥0.0</b>
+
+<b id="uc">
+¥0.0
+</b>
+
 </div>
 
-<input id="edit" type="hidden">
+
+<input
+id="edit"
+type="hidden">
+
 
 <button
 onclick="saveProduct()"
 style="margin-top:6px">
+
 保存
+
 </button>
 
 </div>
@@ -815,12 +1019,14 @@ placeholder="冷凍、まぐろ、乾物、容器など">
 <table class="table">
 
 <thead>
+
 <tr>
 <th>商品</th>
 <th>カテゴリ</th>
 <th>実質単価</th>
 <th>操作</th>
 </tr>
+
 </thead>
 
 <tbody id="prodRows"></tbody>
@@ -834,13 +1040,60 @@ placeholder="冷凍、まぐろ、乾物、容器など">
 </section>
 
 
-<!-- カレンダー -->
+<!-- =========================
+     レシピ
+========================= -->
+
+<section id="recipes" class="page">
+
+<div class="top">
+
+<div>
+
+<div class="brand">
+レシピ
+</div>
+
+<div class="muted">
+丼作成から保存したレシピ
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>保存済みレシピ</h2>
+
+<div id="recipeList">
+
+<div class="muted">
+レシピはまだありません
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     カレンダー
+========================= -->
 
 <section id="calendar" class="page">
 
 <div class="top">
-<div class="brand">カレンダー</div>
+
+<div class="brand">
+カレンダー
 </div>
+
+</div>
+
 
 <div class="card">
 
@@ -860,9 +1113,13 @@ onclick="moveCal(1)">
 
 </div>
 
+
 <h2 id="calTitle"></h2>
 
-<div id="cal" class="cal"></div>
+<div
+id="cal"
+class="cal">
+</div>
 
 </div>
 
@@ -873,26 +1130,42 @@ onclick="moveCal(1)">
 id="edate"
 type="date">
 
+
 <input
 id="etitle"
 placeholder="行事・支払い名"
 style="margin-top:6px">
 
+
 <select
 id="etype"
 style="margin-top:6px">
 
-<option value="event">イベント</option>
-<option value="pay">支払い</option>
-<option value="biz">店舗行事</option>
-<option value="closed">定休日</option>
+<option value="event">
+イベント
+</option>
+
+<option value="pay">
+支払い
+</option>
+
+<option value="biz">
+店舗行事
+</option>
+
+<option value="closed">
+定休日
+</option>
 
 </select>
+
 
 <button
 onclick="addEvent()"
 style="margin-top:6px">
+
 登録
+
 </button>
 
 </div>
@@ -901,6 +1174,7 @@ style="margin-top:6px">
 <div class="card">
 
 <h2>登録済み</h2>
+
 <div id="eventList"></div>
 
 </div>
@@ -908,13 +1182,20 @@ style="margin-top:6px">
 </section>
 
 
-<!-- 棚卸し -->
+<!-- =========================
+     棚卸し
+========================= -->
 
 <section id="stock" class="page">
 
 <div class="top">
-<div class="brand">棚卸し</div>
+
+<div class="brand">
+棚卸し
 </div>
+
+</div>
+
 
 <div class="card">
 
@@ -924,6 +1205,7 @@ style="margin-top:6px">
 id="stockMonth"
 type="month"
 onchange="renderStock()">
+
 
 <div
 id="stockSavedInfo"
@@ -941,18 +1223,25 @@ id="stockFilter"
 onchange="renderStock()">
 </select>
 
+
 <div id="stockRows"></div>
+
 
 <button
 onclick="saveStock()"
 style="margin-top:8px">
+
 この月の棚卸しを保存
+
 </button>
+
 
 <div
 id="stockTotal"
 class="stock-month-total">
+
 ¥0
+
 </div>
 
 </div>
@@ -960,13 +1249,20 @@ class="stock-month-total">
 </section>
 
 
-<!-- 棚卸し分析 -->
+<!-- =========================
+     棚卸し分析
+========================= -->
 
 <section id="analysis" class="page">
 
 <div class="top">
-<div class="brand">棚卸し分析</div>
+
+<div class="brand">
+棚卸し分析
 </div>
+
+</div>
+
 
 <div class="card">
 
@@ -975,61 +1271,116 @@ class="stock-month-total">
 <button
 class="secondary"
 onclick="moveAna(-1)">
+
 ← 前月
+
 </button>
+
 
 <button
 class="secondary"
 onclick="moveAna(1)">
+
 次月 →
+
 </button>
 
 </div>
+
 
 <h2 id="anaTitle"></h2>
 
 
 <div class="metric">
 
+
 <div class="pill">
+
 月初棚卸し（先月末）
-<b id="anaStartStock">¥0</b>
+
+<b id="anaStartStock">
+¥0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 当月仕入れ（税込換算）
-<b id="anaP">¥0</b>
+
+<b id="anaP">
+¥0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 月末棚卸し
-<b id="anaSt">¥0</b>
+
+<b id="anaSt">
+¥0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 売上原価
-<b id="anaActualCost">¥0</b>
+
+<b id="anaActualCost">
+¥0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 売上
-<b id="anaS">¥0</b>
+
+<b id="anaS">
+¥0
+</b>
+
 </div>
 
+
 <div class="pill">
+
 実原価率
-<b id="anaR">0.0%</b>
+
+<b id="anaR">
+0.0%
+</b>
+
 </div>
+
 
 <div class="pill">
+
 粗利益
-<b id="anaGrossProfit">¥0</b>
-</div>
+
+<b id="anaGrossProfit">
+¥0
+</b>
 
 </div>
 
-<div class="muted" style="margin-top:8px">
-実原価率 ＝（月初棚卸し ＋ 当月仕入れ − 月末棚卸し）÷ 売上 × 100
+</div>
+
+
+<div
+class="muted"
+style="margin-top:8px">
+
+実原価率 ＝
+（月初棚卸し ＋ 当月仕入れ − 月末棚卸し）
+÷ 売上 × 100
+
 </div>
 
 </div>
@@ -1037,7 +1388,9 @@ onclick="moveAna(1)">
 
 <div class="card">
 
-<h2>月末棚卸しのカテゴリ構成</h2>
+<h2>
+月末棚卸しのカテゴリ構成
+</h2>
 
 <div id="anaCats"></div>
 
@@ -1045,15 +1398,27 @@ onclick="moveAna(1)">
 
 </section>
 
+
 </main>
+
+
+<!--
+ mainの外に置くことで
+ スクロールする内容から完全に分離
+-->
 
 <nav id="nav"></nav>
 
-<script>const $=id=>document.getElementById(id);
+
+<script>/* =========================
+   基本設定・保存
+========================= */
+
+const $=id=>document.getElementById(id);
 
 /*
- 既存データを消さないため
- 今までと同じ保存キーを使用
+ 今までの登録データを消さないため
+ 保存キーはそのまま
 */
 const K='tencho_one_v5_';
 
@@ -1093,6 +1458,10 @@ const Y=n=>
 const TAX=1.1;
 
 
+/* =========================
+   今までのデータ
+========================= */
+
 let products=L('products',[]);
 
 let sales=L('sales',[]);
@@ -1102,6 +1471,14 @@ let events=L('events',[]);
 let purchases=L('purchases',[]);
 
 let deliverySales=L('deliverySales',[]);
+
+let stocks=L('stockHistory',[]);
+
+
+/*
+ 新しく追加するレシピ
+*/
+let recipes=L('recipes',[]);
 
 
 let deliveryServices=L(
@@ -1121,9 +1498,6 @@ let cats=L(
 );
 
 
-let stocks=L('stockHistory',[]);
-
-
 /* =========================
    下メニュー
 ========================= */
@@ -1137,6 +1511,8 @@ const pages=[
  ['bowl','丼作成'],
 
  ['products','商品登録'],
+
+ ['recipes','レシピ'],
 
  ['calendar','カレンダー'],
 
@@ -1164,8 +1540,8 @@ function go(id,b){
 
  document
  .querySelectorAll('.page')
- .forEach(
-  x=>x.classList.remove('on')
+ .forEach(x=>
+  x.classList.remove('on')
  );
 
 
@@ -1174,12 +1550,14 @@ function go(id,b){
 
  document
  .querySelectorAll('#nav button')
- .forEach(
-  x=>x.classList.remove('sel')
+ .forEach(x=>
+  x.classList.remove('sel')
  );
 
 
- b.classList.add('sel');
+ if(b){
+  b.classList.add('sel');
+ }
 
 
  if(id==='home'){
@@ -1210,6 +1588,13 @@ function go(id,b){
  }
 
 
+ if(id==='recipes'){
+
+  renderRecipes();
+
+ }
+
+
  if(id==='calendar'){
 
   renderCal();
@@ -1233,7 +1618,11 @@ function go(id,b){
  }
 
 
- window.scrollTo(0,0);
+ window.scrollTo({
+  top:0,
+  left:0,
+  behavior:'auto'
+ });
 
 }
 
@@ -1429,7 +1818,10 @@ function saveSales(){
  }
 
 
- S('sales',sales);
+ S(
+  'sales',
+  sales
+ );
 
 
  renderSales();
@@ -1444,11 +1836,6 @@ function saveSales(){
 ========================= */
 
 function pinc(x){
-
- /*
- 新しく入力する仕入れは税抜。
- 過去データとの互換性も維持。
- */
 
  if(x.taxMode==='ex'){
 
@@ -1689,8 +2076,11 @@ function renderD(){
  `<div class="item">
 
  <div>
+
  ${x.serviceName}
+
  ${Y(x.gross)}
+
  </div>
 
 
@@ -1840,224 +2230,6 @@ function renderSales(){
   </tr>`;
 
  }).join('');
-
-}/* =========================
-   ホーム
-========================= */
-
-function home(){
-
- let now=new Date();
-
- let y=now.getFullYear();
- let m=now.getMonth();
- let day=now.getDate();
-
- let monthStart=
- `${y}-${String(m+1).padStart(2,'0')}-01`;
-
- let yesterday=
- new Date(y,m,day-1);
-
- let yesterdayISO=
- iso(yesterday);
-
- let lastY=y-1;
-
- let lastStart=
- `${lastY}-${String(m+1).padStart(2,'0')}-01`;
-
- let lastEnd=
- `${lastY}-${String(m+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
-
- let lastToday=
- `${lastY}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-
- let between=(x,a,b)=>
- x.date>=a&&x.date<=b;
-
-
- let currentSales=
- sales.filter(x=>
-  between(x,monthStart,yesterdayISO)
- );
-
- let previousSales=
- sales.filter(x=>
-  between(x,lastStart,lastEnd)
- );
-
-
- let currentS=
- currentSales.reduce(
-  (a,x)=>a+(+x.s||0),0
- );
-
- let currentC=
- currentSales.reduce(
-  (a,x)=>a+(+x.c||0),0
- );
-
- let previousS=
- previousSales.reduce(
-  (a,x)=>a+(+x.s||0),0
- );
-
- let previousC=
- previousSales.reduce(
-  (a,x)=>a+(+x.c||0),0
- );
-
- let previousToday=
- sales.find(
-  x=>x.date===lastToday
- );
-
-
- $('hyS').textContent=
- Y(previousToday?.s||0);
-
- $('hyC').textContent=
- (previousToday?.c||0)+'人';
-
- $('cumS').textContent=
- Y(currentS);
-
- $('cumC').textContent=
- currentC+'人';
-
- $('yoyS').textContent=
- previousS
- ?(currentS/previousS*100).toFixed(1)+'%'
- :'-';
-
- $('yoyC').textContent=
- previousC
- ?(currentC/previousC*100).toFixed(1)+'%'
- :'-';
-
-
- $('gapS').textContent=
- previousS===0
- ?'-'
- :currentS>=previousS
- ?'前年超え '+Y(currentS-previousS)
- :'あと '+Y(previousS-currentS);
-
-
- $('gapC').textContent=
- previousC===0
- ?'-'
- :currentC>=previousC
- ?'前年超え '+(currentC-previousC)+'人'
- :'あと '+(previousC-currentC)+'人';
-
-
- /* デリバリー */
-
- let currentDelivery=
- deliverySales.filter(x=>
-  between(x,monthStart,yesterdayISO)
- );
-
- let previousDelivery=
- deliverySales.filter(x=>
-  between(x,lastStart,lastEnd)
- );
-
- let currentD=
- currentDelivery.reduce(
-  (a,x)=>a+(+x.gross||0),0
- );
-
- let previousD=
- previousDelivery.reduce(
-  (a,x)=>a+(+x.gross||0),0
- );
-
- let previousTodayD=
- deliverySales
- .filter(x=>x.date===lastToday)
- .reduce(
-  (a,x)=>a+(+x.gross||0),0
- );
-
-
- $('hyD').textContent=
- Y(previousTodayD);
-
- $('cumD').textContent=
- Y(currentD);
-
- $('yoyD').textContent=
- previousD
- ?(currentD/previousD*100).toFixed(1)+'%'
- :'-';
-
- $('gapD').textContent=
- previousD===0
- ?'-'
- :currentD>=previousD
- ?'前年超え '+Y(currentD-previousD)
- :'あと '+Y(previousD-currentD);
-
-
- /* 仕入れ */
-
- let currentPurchase=
- purchases
- .filter(x=>
-  between(x,monthStart,yesterdayISO)
- )
- .reduce(
-  (a,x)=>a+pinc(x),0
- );
-
-
- let totalSales=
- currentS+currentD;
-
-
- $('purT').textContent=
- Y(currentPurchase);
-
- $('rateT').textContent=
- totalSales
- ?(currentPurchase/totalSales*100).toFixed(1)+'%'
- :'0.0%';
-
- $('profitT').textContent=
- Y(totalSales-currentPurchase);
-
-
- /* 行事 */
-
- let e=
- events
- .filter(x=>x.date>=iso())
- .sort(
-  (a,b)=>a.date.localeCompare(b.date)
- )
- .slice(0,4);
-
-
- $('homeEv').innerHTML=
-
- e.map(x=>
-
- `<div
- class="pill"
- style="margin-top:5px">
-
- ${pd(x.date)}　${x.title}
-
- </div>`
-
- ).join('')
-
- ||
-
- '<div class="muted">予定なし</div>';
 
 }
 
@@ -2243,9 +2415,7 @@ function renderBowl(){
   deleteBowlItem(
    ${item.id}
   )">
-
   削除
-
   </button>
 
   </div>
@@ -2347,14 +2517,25 @@ function calcBowl(){
  $('bowlCost').textContent=
  '¥'+total.toFixed(1);
 
+
  $('bowlSell').textContent=
  Y(price);
+
 
  $('bowlRate').textContent=
  rate.toFixed(1)+'%';
 
+
  $('bowlProfit').textContent=
  Y(profit);
+
+
+ return {
+  cost:total,
+  price:price,
+  rate:rate,
+  profit:profit
+ };
 
 }
 
@@ -2367,11 +2548,681 @@ $('bowlPrice')
 
 
 /* =========================
-   商品・カテゴリ
+   レシピ保存
+========================= */
+
+function saveRecipe(){
+
+ let name=
+ $('bowlName')
+ .value
+ .trim();
+
+
+ if(!name){
+
+  alert(
+   '丼の商品名を入力してください'
+  );
+
+  return;
+
+ }
+
+
+ let price=
+ +$('bowlPrice').value||0;
+
+
+ if(!price){
+
+  alert(
+   '売価を入力してください'
+  );
+
+  return;
+
+ }
+
+
+ let ingredients=[];
+
+
+ bowlItems.forEach(item=>{
+
+
+  let p=
+  products.find(
+   x=>
+   String(x.id)===
+   String(item.productId)
+  );
+
+
+  let qty=
+  +item.qty||0;
+
+
+  if(!p||!qty){
+   return;
+  }
+
+
+  ingredients.push({
+
+   productId:p.id,
+
+   name:p.name,
+
+   qty:qty,
+
+   unit:p.unit||'',
+
+   unitCost:
+   +p.cost||0,
+
+   cost:
+   (+p.cost||0)*qty
+
+  });
+
+ });
+
+
+ if(!ingredients.length){
+
+  alert(
+   '食材を1つ以上入れてください'
+  );
+
+  return;
+
+ }
+
+
+ let result=
+ calcBowl();
+
+
+ /*
+ 同じ名前のレシピがあった場合は
+ 勝手に消さず、確認して更新
+ */
+ let old=
+ recipes.find(
+  x=>x.name===name
+ );
+
+
+ if(old){
+
+  let ok=
+  confirm(
+   '同じ名前のレシピがあります。上書きしますか？'
+  );
+
+
+  if(!ok){
+   return;
+  }
+
+
+  old.price=
+  price;
+
+  old.cost=
+  result.cost;
+
+  old.rate=
+  result.rate;
+
+  old.profit=
+  result.profit;
+
+  old.ingredients=
+  ingredients;
+
+  old.updatedAt=
+  Date.now();
+
+ }else{
+
+  recipes.push({
+
+   id:Date.now(),
+
+   name:name,
+
+   price:price,
+
+   cost:result.cost,
+
+   rate:result.rate,
+
+   profit:result.profit,
+
+   ingredients:ingredients,
+
+   createdAt:Date.now(),
+
+   updatedAt:Date.now()
+
+  });
+
+ }
+
+
+ S(
+  'recipes',
+  recipes
+ );
+
+
+ renderRecipes();
+
+
+ alert(
+  'レシピに保存しました'
+ );
+
+}
+
+
+/* =========================
+   レシピ一覧
+========================= */
+
+function renderRecipes(){
+
+ if(!recipes.length){
+
+  $('recipeList').innerHTML=
+
+  '<div class="muted">レシピはまだありません</div>';
+
+  return;
+
+ }
+
+
+ $('recipeList').innerHTML=
+
+ recipes
+
+ .slice()
+
+ .sort(
+  (a,b)=>
+  (+b.updatedAt||0)-
+  (+a.updatedAt||0)
+ )
+
+ .map(r=>{
+
+
+  let foods=
+
+  (r.ingredients||[])
+
+  .map(i=>
+
+   `<div class="recipe-food">
+
+   <b>${i.name}</b>
+
+   <span style="float:right">
+
+   ${i.qty}${i.unit||''}
+
+   </span>
+
+   <div
+   class="muted"
+   style="clear:both">
+
+   原価：
+   ¥${(+i.cost||0).toFixed(1)}
+
+   </div>
+
+   </div>`
+
+  ).join('');
+
+
+  return `
+
+  <div class="recipe-card">
+
+  <div class="recipe-name">
+  ${r.name}
+  </div>
+
+
+  <div class="metric">
+
+  <div class="pill">
+  売価
+  <b>${Y(r.price)}</b>
+  </div>
+
+  <div class="pill">
+  原価
+  <b>¥${(+r.cost||0).toFixed(1)}</b>
+  </div>
+
+  <div class="pill">
+  原価率
+  <b>${(+r.rate||0).toFixed(1)}%</b>
+  </div>
+
+  <div class="pill">
+  粗利益
+  <b>${Y(r.profit)}</b>
+  </div>
+
+  </div>
+
+
+  <div style="margin-top:9px">
+
+  ${foods}
+
+  </div>
+
+
+  <button
+  class="secondary"
+  onclick="loadRecipe(${r.id})"
+  style="margin-top:9px">
+
+  このレシピを丼作成で開く
+
+  </button>
+
+
+  <button
+  class="danger"
+  onclick="deleteRecipe(${r.id})"
+  style="margin-top:6px">
+
+  レシピを削除
+
+  </button>
+
+  </div>`;
+
+ }).join('');
+
+}
+
+
+/* =========================
+   レシピを丼作成へ読み込む
+========================= */
+
+function loadRecipe(id){
+
+ let r=
+ recipes.find(
+  x=>x.id===id
+ );
+
+
+ if(!r)return;
+
+
+ $('bowlName').value=
+ r.name||'';
+
+
+ $('bowlPrice').value=
+ r.price||'';
+
+
+ bowlItems=
+
+ (r.ingredients||[])
+
+ .map((i,index)=>({
+
+  id:
+  Date.now()+
+  index+
+  Math.random(),
+
+  productId:
+  i.productId,
+
+  qty:
+  i.qty
+
+ }));
+
+
+ if(!bowlItems.length){
+
+  bowlItems=[
+
+   {
+    id:Date.now(),
+    productId:'',
+    qty:''
+   }
+
+  ];
+
+ }
+
+
+ renderBowl();
+
+
+ let buttons=
+ document.querySelectorAll(
+  '#nav button'
+ );
+
+
+ let bowlButton=
+ [...buttons].find(
+  b=>b.textContent.trim()==='丼作成'
+ );
+
+
+ go(
+  'bowl',
+  bowlButton
+ );
+
+}
+
+
+/* =========================
+   レシピ削除
+========================= */
+
+function deleteRecipe(id){
+
+ let r=
+ recipes.find(
+  x=>x.id===id
+ );
+
+
+ if(!r)return;
+
+
+ if(
+  !confirm(
+   `「${r.name}」を削除しますか？`
+  )
+ ){
+  return;
+ }
+
+
+ recipes=
+ recipes.filter(
+  x=>x.id!==id
+ );
+
+
+ S(
+  'recipes',
+  recipes
+ );
+
+
+ renderRecipes();
+
+}/* =========================
+   ホーム
+========================= */
+
+function home(){
+
+ let now=new Date();
+
+ let y=now.getFullYear();
+ let m=now.getMonth();
+ let day=now.getDate();
+
+ let monthStart=
+ `${y}-${String(m+1).padStart(2,'0')}-01`;
+
+ let yesterday=
+ new Date(y,m,day-1);
+
+ let yesterdayISO=
+ iso(yesterday);
+
+ let lastY=y-1;
+
+ let lastStart=
+ `${lastY}-${String(m+1).padStart(2,'0')}-01`;
+
+ let lastEnd=
+ `${lastY}-${String(m+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+
+ let lastToday=
+ `${lastY}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+ let between=(x,a,b)=>
+ x.date>=a&&x.date<=b;
+
+
+ /* 店頭売上・客数 */
+
+ let currentSales=
+ sales.filter(x=>
+  between(x,monthStart,yesterdayISO)
+ );
+
+ let previousSales=
+ sales.filter(x=>
+  between(x,lastStart,lastEnd)
+ );
+
+
+ let currentS=
+ currentSales.reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
+
+ let currentC=
+ currentSales.reduce(
+  (a,x)=>a+(+x.c||0),0
+ );
+
+ let previousS=
+ previousSales.reduce(
+  (a,x)=>a+(+x.s||0),0
+ );
+
+ let previousC=
+ previousSales.reduce(
+  (a,x)=>a+(+x.c||0),0
+ );
+
+
+ let previousToday=
+ sales.find(
+  x=>x.date===lastToday
+ );
+
+
+ $('hyS').textContent=
+ Y(previousToday?.s||0);
+
+ $('hyC').textContent=
+ (previousToday?.c||0)+'人';
+
+ $('cumS').textContent=
+ Y(currentS);
+
+ $('cumC').textContent=
+ currentC+'人';
+
+
+ $('yoyS').textContent=
+ previousS
+ ?(currentS/previousS*100).toFixed(1)+'%'
+ :'-';
+
+
+ $('yoyC').textContent=
+ previousC
+ ?(currentC/previousC*100).toFixed(1)+'%'
+ :'-';
+
+
+ $('gapS').textContent=
+ previousS===0
+ ?'-'
+ :currentS>=previousS
+ ?'前年超え '+Y(currentS-previousS)
+ :'あと '+Y(previousS-currentS);
+
+
+ $('gapC').textContent=
+ previousC===0
+ ?'-'
+ :currentC>=previousC
+ ?'前年超え '+(currentC-previousC)+'人'
+ :'あと '+(previousC-currentC)+'人';
+
+
+ /* デリバリー */
+
+ let currentDelivery=
+ deliverySales.filter(x=>
+  between(x,monthStart,yesterdayISO)
+ );
+
+
+ let previousDelivery=
+ deliverySales.filter(x=>
+  between(x,lastStart,lastEnd)
+ );
+
+
+ let currentD=
+ currentDelivery.reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+
+ let previousD=
+ previousDelivery.reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+
+ let previousTodayD=
+ deliverySales
+ .filter(
+  x=>x.date===lastToday
+ )
+ .reduce(
+  (a,x)=>a+(+x.gross||0),0
+ );
+
+
+ $('hyD').textContent=
+ Y(previousTodayD);
+
+ $('cumD').textContent=
+ Y(currentD);
+
+
+ $('yoyD').textContent=
+ previousD
+ ?(currentD/previousD*100).toFixed(1)+'%'
+ :'-';
+
+
+ $('gapD').textContent=
+ previousD===0
+ ?'-'
+ :currentD>=previousD
+ ?'前年超え '+Y(currentD-previousD)
+ :'あと '+Y(previousD-currentD);
+
+
+ /* 仕入れ・利益 */
+
+ let currentPurchase=
+ purchases
+ .filter(x=>
+  between(x,monthStart,yesterdayISO)
+ )
+ .reduce(
+  (a,x)=>a+pinc(x),0
+ );
+
+
+ let totalSales=
+ currentS+currentD;
+
+
+ $('purT').textContent=
+ Y(currentPurchase);
+
+
+ $('rateT').textContent=
+ totalSales
+ ?(currentPurchase/totalSales*100).toFixed(1)+'%'
+ :'0.0%';
+
+
+ $('profitT').textContent=
+ Y(totalSales-currentPurchase);
+
+
+ /* 直近の行事 */
+
+ let e=
+ events
+ .filter(
+  x=>x.date>=iso()
+ )
+ .sort(
+  (a,b)=>a.date.localeCompare(b.date)
+ )
+ .slice(0,4);
+
+
+ $('homeEv').innerHTML=
+
+ e.map(x=>
+
+ `<div
+ class="pill"
+ style="margin-top:5px">
+
+ ${pd(x.date)}　${x.title}
+
+ </div>`
+
+ ).join('')
+
+ ||
+
+ '<div class="muted">予定なし</div>';
+
+}
+
+
+/* =========================
+   商品カテゴリ
 ========================= */
 
 function renderCats(){
 
+ /*
+ 商品登録用カテゴリ
+ */
  $('cat').innerHTML=
 
  cats.map(x=>
@@ -2383,6 +3234,9 @@ function renderCats(){
  ).join('');
 
 
+ /*
+ 棚卸し用カテゴリ
+ */
  $('stockFilter').innerHTML=
 
  '<option value="">全カテゴリ</option>'
@@ -2398,6 +3252,9 @@ function renderCats(){
  ).join('');
 
 
+ /*
+ カテゴリ管理一覧
+ */
  $('catList').innerHTML=
 
  cats.map(x=>
@@ -2409,7 +3266,9 @@ function renderCats(){
  <button
  class="danger small"
  onclick="delCat('${x}')">
+
  削除
+
  </button>
 
  </div>`
@@ -2419,6 +3278,10 @@ function renderCats(){
 }
 
 
+/* =========================
+   カテゴリ追加
+========================= */
+
 function addCat(){
 
  let x=
@@ -2427,12 +3290,16 @@ function addCat(){
  .trim();
 
 
- if(!x)return;
+ if(!x){
+  return;
+ }
 
 
  if(cats.includes(x)){
 
-  alert('同じカテゴリがあります');
+  alert(
+   '同じカテゴリがあります'
+  );
 
   return;
 
@@ -2456,8 +3323,15 @@ function addCat(){
 }
 
 
+/* =========================
+   カテゴリ削除
+========================= */
+
 function delCat(x){
 
+ /*
+ 商品で使用中なら削除しない
+ */
  if(
   products.some(
    p=>
@@ -2471,6 +3345,15 @@ function delCat(x){
 
   return;
 
+ }
+
+
+ if(
+  !confirm(
+   `「${x}」を削除しますか？`
+  )
+ ){
+  return;
  }
 
 
@@ -2491,6 +3374,11 @@ function delCat(x){
 }
 
 
+/* =========================
+   商品登録
+   実質単価プレビュー
+========================= */
+
 function preview(){
 
  let buyPrice=
@@ -2505,6 +3393,10 @@ function preview(){
  $('unit').value;
 
 
+ /*
+ kgで仕入れた場合は
+ g単価に変換
+ */
  let base=
 
  inputUnit==='kg'
@@ -2535,6 +3427,13 @@ function preview(){
  +$('yieldv').value||100;
 
 
+ /*
+ 優先順位
+
+ 1. 調理後重量
+ 2. 実際に使える量
+ 3. 仕入数量×歩留まり
+ */
  let finalQty=
 
  cooked
@@ -2548,6 +3447,10 @@ function preview(){
  base*(yieldRate/100);
 
 
+ /*
+ 仕入価格は税抜入力なので
+ 税込換算して単価計算
+ */
  let cost=
 
  finalQty
@@ -2564,6 +3467,9 @@ function preview(){
 }
 
 
+/*
+ 入力したらすぐ単価更新
+ */
 [
  'bp',
  'bq',
@@ -2590,6 +3496,10 @@ function preview(){
 
 });
 
+
+/* =========================
+   商品保存
+========================= */
 
 function saveProduct(){
 
@@ -2712,6 +3622,9 @@ function saveProduct(){
  };
 
 
+ /*
+ 変更の場合
+ */
  if(editId){
 
   products=
@@ -2728,6 +3641,9 @@ function saveProduct(){
 
  }else{
 
+  /*
+  新規商品
+  */
   products.push(obj);
 
  }
@@ -2739,6 +3655,9 @@ function saveProduct(){
  );
 
 
+ /*
+ 入力欄を空にする
+ */
  $('pn').value='';
 
  $('bp').value='';
@@ -2767,6 +3686,10 @@ function saveProduct(){
 }
 
 
+/* =========================
+   商品変更
+========================= */
+
 function editP(id){
 
  let p=
@@ -2775,37 +3698,48 @@ function editP(id){
  );
 
 
- if(!p)return;
+ if(!p){
+  return;
+ }
 
 
  $('pn').value=
  p.name||'';
 
+
  $('bp').value=
  p.buyPrice||0;
 
+
  $('bq').value=
  p.buyQty||0;
+
 
  $('unit').value=
  p.inputUnit||
  p.unit||
  'g';
 
+
  $('usable').value=
  p.usableQty||'';
+
 
  $('cooked').value=
  p.cookedQty||'';
 
+
  $('yieldv').value=
  p.yield||100;
+
 
  $('pack').value=
  p.packQty||'';
 
+
  $('cat').value=
  p.category||'その他';
+
 
  $('edit').value=
  p.id;
@@ -2815,21 +3749,34 @@ function editP(id){
 
 
  window.scrollTo({
-
   top:0,
-
+  left:0,
   behavior:'smooth'
-
  });
 
 }
 
 
+/* =========================
+   商品削除
+========================= */
+
 function delProd(id){
+
+ let p=
+ products.find(
+  x=>x.id===id
+ );
+
+
+ if(!p){
+  return;
+ }
+
 
  if(
   !confirm(
-   'この商品を削除しますか？'
+   `「${p.name}」を削除しますか？`
   )
  ){
   return;
@@ -2857,6 +3804,10 @@ function delProd(id){
 }
 
 
+/* =========================
+   商品一覧
+========================= */
+
 function renderProducts(){
 
  $('prodRows').innerHTML=
@@ -2874,8 +3825,10 @@ function renderProducts(){
  </td>
 
  <td>
+
  ¥${(+p.cost||0).toFixed(1)}
  /1${p.unit||''}
+
  </td>
 
  <td>
@@ -2883,13 +3836,18 @@ function renderProducts(){
  <button
  class="secondary small"
  onclick="editP(${p.id})">
+
  変更
+
  </button>
+
 
  <button
  class="danger small"
  onclick="delProd(${p.id})">
+
  削除
+
  </button>
 
  </td>
@@ -2945,13 +3903,11 @@ function getHolidays(year){
  function add(month,day,name){
 
   let date=
-
   year+
   '-'+
   String(month).padStart(2,'0')+
   '-'+
   String(day).padStart(2,'0');
-
 
   h[date]=name;
 
@@ -3159,7 +4115,6 @@ function renderCal(){
 
 
  $('calTitle').textContent=
-
  `${y}年${m+1}月`;
 
 
@@ -3178,30 +4133,17 @@ function renderCal(){
  ).join('');
 
 
- for(
-  let i=0;
-  i<firstDay;
-  i++
- ){
+ for(let i=0;i<firstDay;i++){
 
   html+='<span></span>';
 
  }
 
 
- for(
-  let d=1;
-  d<=days;
-  d++
- ){
+ for(let d=1;d<=days;d++){
 
   let date=
-
-  `${y}-${
-   String(m+1).padStart(2,'0')
-  }-${
-   String(d).padStart(2,'0')
-  }`;
+  `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
 
   let dow=
@@ -3317,7 +4259,10 @@ function addEvent(){
  });
 
 
- S('events',events);
+ S(
+  'events',
+  events
+ );
 
 
  $('etitle').value='';
@@ -3340,7 +4285,10 @@ function deleteEvent(id){
  );
 
 
- S('events',events);
+ S(
+  'events',
+  events
+ );
 
 
  renderCal();
@@ -3355,9 +4303,7 @@ function deleteEvent(id){
 function renderEventList(){
 
  let list=
-
  [...events]
-
  .sort(
   (a,b)=>
   a.date.localeCompare(b.date)
@@ -3392,7 +4338,9 @@ function renderEventList(){
  <button
  class="danger small"
  onclick="deleteEvent(${x.id})">
+
  削除
+
  </button>
 
  </div>`
@@ -3410,23 +4358,15 @@ function renderEventList(){
    月ごとの棚卸し
 ========================= */
 
-/*
- 保存済みの棚卸しを取得
-
- 新しいデータ：
- month = 2026-07
-
- 古いデータ：
- date = 2026-07-27
-
- 両方読めるようにする
-*/
 function getStockSnapshot(ym){
 
  return stocks
 
  .filter(x=>{
 
+  /*
+   新しい月別保存
+  */
   if(x.month){
 
    return x.month===ym;
@@ -3434,6 +4374,9 @@ function getStockSnapshot(ym){
   }
 
 
+  /*
+   今まで保存した棚卸しも消さずに読む
+  */
   return (
    x.date &&
    x.date.startsWith(ym)
@@ -3449,9 +4392,10 @@ function getStockSnapshot(ym){
 }
 
 
-/*
- 棚卸し画面
-*/
+/* =========================
+   棚卸し画面
+========================= */
+
 function renderStock(){
 
  let month=
@@ -3502,14 +4446,13 @@ function renderStock(){
   );
 
 
-  /*
-   新しい棚卸しデータなら
-   P数と開封済み数量をそのまま復元
-  */
   let packs=
   old?.packs ?? 0;
 
 
+  /*
+   過去の棚卸しデータも復元
+  */
   let opened=
 
   old?.opened
@@ -3539,6 +4482,7 @@ function renderStock(){
   ・実質単価
 
   ¥${(+p.cost||0).toFixed(1)}
+
   /1${p.unit||''}
 
   </div>
@@ -3614,10 +4558,10 @@ function renderStock(){
 }
 
 
-/*
- 入力した瞬間に
- 数量と金額を計算
-*/
+/* =========================
+   棚卸し金額プレビュー
+========================= */
+
 function calcStockPreview(){
 
  let total=0;
@@ -3638,7 +4582,9 @@ function calcStockPreview(){
   );
 
 
-  if(!p)return;
+  if(!p){
+   return;
+  }
 
 
   let packs=
@@ -3653,6 +4599,10 @@ function calcStockPreview(){
   +p.packQty||0;
 
 
+  /*
+   未開封P数 × 1P数量
+   ＋ 開封済み数量
+  */
   let qty=
 
   packs*packQty
@@ -3693,12 +4643,10 @@ function calcStockPreview(){
 }
 
 
-/*
- 棚卸し保存
+/* =========================
+   棚卸し保存
+========================= */
 
- 同じ月を保存した場合は
- 新しい内容に更新
-*/
 function saveStock(){
 
  let month=
@@ -3730,7 +4678,9 @@ function saveStock(){
   );
 
 
-  if(!p)return;
+  if(!p){
+   return;
+  }
 
 
   let packs=
@@ -3795,7 +4745,8 @@ function saveStock(){
 
 
  /*
- 同じ月の新形式データを削除
+ 同じ月の新しい月別データだけ更新。
+ 他の月や他のデータは消さない。
  */
  stocks=
 
@@ -3804,9 +4755,6 @@ function saveStock(){
  );
 
 
- /*
- 月ごとの棚卸しを保存
- */
  stocks.push({
 
   id:Date.now(),
@@ -3856,13 +4804,14 @@ function moveAna(n){
   anaDate.getMonth()+n
  );
 
+
  renderAna();
 
 }
 
 
 /*
- 先月を取得
+ 先月の年月
 */
 function previousYM(ym){
 
@@ -3919,7 +4868,9 @@ function renderAna(){
  purchases
 
  .filter(
-  x=>x.date.startsWith(ym)
+  x=>
+  x.date &&
+  x.date.startsWith(ym)
  )
 
  .reduce(
@@ -3936,7 +4887,9 @@ function renderAna(){
  sales
 
  .filter(
-  x=>x.date.startsWith(ym)
+  x=>
+  x.date &&
+  x.date.startsWith(ym)
  )
 
  .reduce(
@@ -3953,7 +4906,9 @@ function renderAna(){
  deliverySales
 
  .filter(
-  x=>x.date.startsWith(ym)
+  x=>
+  x.date &&
+  x.date.startsWith(ym)
  )
 
  .reduce(
@@ -3963,17 +4918,19 @@ function renderAna(){
 
 
  /*
- 店頭＋デリバリー
+ 売上合計
  */
  let salesTotal=
 
- storeSales+
+ storeSales
+
+ +
 
  deliveryTotal;
 
 
  /*
- 今月の月末棚卸し
+ 今月末棚卸し
  */
  let endStock=
  getStockSnapshot(ym);
@@ -3984,7 +4941,7 @@ function renderAna(){
 
 
  /*
- 先月の棚卸し
+ 先月末棚卸し
  ＝今月の月初棚卸し
  */
  let prevMonth=
@@ -4024,18 +4981,23 @@ function renderAna(){
  /*
  実原価率
 
- 売上原価
- ÷
- 売上
+ （月初棚卸し
+ ＋仕入れ
+ −月末棚卸し）
+
+ ÷ 売上
+
  ×100
  */
  let actualRate=
 
  salesTotal
 
- ?actualCost/
-  salesTotal*
-  100
+ ?(
+   actualCost/
+   salesTotal*
+   100
+  )
 
  :0;
 
@@ -4045,7 +5007,9 @@ function renderAna(){
  */
  let grossProfit=
 
- salesTotal-
+ salesTotal
+
+ -
 
  actualCost;
 
@@ -4079,7 +5043,7 @@ function renderAna(){
 
 
  /*
- 月末棚卸しのカテゴリ構成
+ 月末棚卸しカテゴリ構成
  */
  let categoryTotals={};
 
@@ -4143,8 +5107,11 @@ function renderAna(){
   <b>${name}</b>
 
   <span>
+
   ${percent.toFixed(1)}%
+
   ${Y(value)}
+
   </span>
 
   </div>
@@ -4170,6 +5137,62 @@ function renderAna(){
 
 
 /* =========================
+   下バー固定補助
+========================= */
+
+/*
+ iPhoneで画面サイズが変化した時も
+ 下バーを画面最下部に維持
+*/
+function keepNavFixed(){
+
+ let nav=
+ $('nav');
+
+
+ if(!nav){
+  return;
+ }
+
+
+ nav.style.position='fixed';
+
+ nav.style.left='0';
+
+ nav.style.right='0';
+
+ nav.style.bottom='0';
+
+ nav.style.top='auto';
+
+}
+
+
+/*
+ スクロールしても
+ nav自体の位置は変更しない
+*/
+window.addEventListener(
+ 'scroll',
+ keepNavFixed,
+ {passive:true}
+);
+
+
+window.addEventListener(
+ 'resize',
+ keepNavFixed,
+ {passive:true}
+);
+
+
+window.addEventListener(
+ 'orientationchange',
+ keepNavFixed
+);
+
+
+/* =========================
    起動
 ========================= */
 
@@ -4180,6 +5203,8 @@ renderCats();
 renderProducts();
 
 renderSales();
+
+renderRecipes();
 
 renderCal();
 
@@ -4196,6 +5221,8 @@ renderAna();
 preview();
 
 renderBowl();
+
+keepNavFixed();
 
 </script>
 
